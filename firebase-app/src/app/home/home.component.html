@@ -1,0 +1,21 @@
+<div class="content-home" role="main">
+  <div class="card card-shadow">
+    <div style="display: block; margin: auto; padding-right: 33%; width: 100px">
+      <input
+        type="text"
+        placeholder="Enter your name"
+        [(ngModel)]="name"
+        name="name"
+        required
+      />
+    </div>
+    <div class="button-row">
+      <div>
+        <button class="button-row button" (click)="join()">Join</button>
+      </div>
+      <div>
+        <button class="button-row button-primary" (click)="host()">Host</button>
+      </div>
+    </div>
+  </div>
+</div>

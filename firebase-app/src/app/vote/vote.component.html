@@ -1,0 +1,56 @@
+<div>
+  <div>
+    <p>Voting</p>
+    <p>Logged in as {{ userName }}</p>
+  </div>
+
+  <div style="display: flex; flex-direction: row; align-items: left">
+    <div
+      class="card"
+      style="
+        width: auto;
+        min-width: 200px;
+        align-items: start;
+        justify-content: start;
+      "
+    >
+      <div class="card-row">
+        <h2>Users in room:</h2>
+        <h2>{{ userCount }}</h2>
+      </div>
+      <div class="card-row">
+        <h3>User</h3>
+        <h3>Vote</h3>
+      </div>
+      <div class="card-row" *ngFor="let user of roomUsers$ | async">
+        <p>
+          {{ user.name }}
+        </p>
+        <p>
+          {{ user.point }}
+        </p>
+      </div>
+    </div>
+    <!-- effort point card -->
+    <div #votingCard class="card" style="align-items: center; width: auto">
+      <h2>Cast Vote</h2>
+      <p>Effort points</p>
+      <div
+        style="display: flexbox; flex-wrap: wrap"
+        *ngFor="let number of effortPoints"
+      >
+        <button
+          [class.button-primary]="number == selectedButton"
+          class="button"
+          style="width: 48px; margin: 4px"
+          (click)="castVote(number)"
+        >
+          {{ number }}
+        </button>
+      </div>
+    </div>
+
+    <!-- chart -->
+    <div class="card" style="min-width: 50%"></div>
+  </div>
+</div>

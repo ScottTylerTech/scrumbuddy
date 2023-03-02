@@ -1,0 +1,42 @@
+<div class="content">
+  <div>
+    <p>Room Selection</p>
+    <p>Logged in as {{ name }}</p>
+  </div>
+
+  <!-- <div #roomButtons id="room-list"></div> -->
+  <div *ngIf="roomCount === 0">
+    <p>There are no rooms.</p>
+    <button [routerLink]="['/host']">Click to host</button>
+  </div>
+  <div *ngIf="roomCount > 0">
+    <div *ngFor="let room of rooms$ | async">
+      <div class="card card-shadow">
+        <div class="room-card">
+          <div class="room-card-row">
+            <span style="font-weight: 500">Room name: </span>
+            <span style="justify-content: flex-end; padding-right: 8px">{{
+              room.roomName
+            }}</span>
+          </div>
+          <div class="room-card-row">
+            <span style="font-weight: 500">Room host: </span>
+            <span>{{ room.host }}</span>
+          </div>
+          <div class="room-card-row">
+            <span style="font-weight: 500">Date created: </span>
+            <span>{{ getDate(room.createTime) | date }}</span>
+          </div>
+          <div class="room-card-row" style="justify-content: end">
+            <button
+              class="button-primary button-shadow"
+              (click)="joinRoom(room)"
+            >
+              Join
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
