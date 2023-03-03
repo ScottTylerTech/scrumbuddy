@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 .content {
   display: flex;
-  margin: 60px auto 32px;
+  margin: 80px auto 32px;
   padding: 0 16px;
   // max-width: 960px;
   flex-direction: column;
@@ -42,7 +42,7 @@
 }
 
 .card-row {
-  margin-left: 5%;
+  // margin-left: 16px;
   width: 90%;
   display: flex;
   flex-direction: row;

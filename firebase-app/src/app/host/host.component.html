@@ -1,26 +1,27 @@
 <div class="content" style="margin-top: 5%">
-  <div *ngIf="!isRoomHosted">
-    <div class="card">
-      <div
+  <div class="card" style="min-width: 200px; margin-top: 8px">
+    <!-- <div
         style="display: block; margin: auto; padding-right: 33%; width: 100px"
       >
-        <input
-          type="text"
-          placeholder="Enter room name"
-          [(ngModel)]="roomName"
-          name="name"
-          required
-        />
-      </div>
-      <div>
-        <button class="button-row button" (click)="createRoom()">
-          Create room
-        </button>
-      </div>
+        <div> -->
+    <div style="margin-top: 8px">
+      <h2>Create room</h2>
     </div>
-  </div>
 
-  <div *ngIf="isRoomHosted">
-    <app-vote></app-vote>
+    <div style="margin-top: 8px">
+      <input
+        type="text"
+        placeholder="Enter room name"
+        [(ngModel)]="room.roomName"
+        name="name"
+        required
+      />
+    </div>
+
+    <div style="margin-top: 8px">
+      <button class="button-row button-primary" (click)="createRoom()">
+        Create room
+      </button>
+    </div>
   </div>
 </div>

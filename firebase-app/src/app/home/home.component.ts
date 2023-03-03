@@ -14,6 +14,7 @@ export class HomeComponent {
   // hostRoom: boolean = false;
 
   constructor(private afs: AngularFirestore, private router: Router) {
+    window.localStorage.setItem('session', 'true');
     this.user = {
       name: '',
       key: '',
@@ -21,9 +22,7 @@ export class HomeComponent {
     };
   }
 
-  ngOnInit(): void {
-    window.localStorage.setItem('session', 'true');
-  }
+  ngOnInit(): void {}
 
   public join(): void {
     if (this.user.name !== '') {
@@ -45,11 +44,13 @@ export class HomeComponent {
 
   @HostListener('window:beforeunload')
   windowBeforeUnload() {
-    this.ClearLocalStore();
+    this.resetLocalStorage();
   }
 
-  ClearLocalStore() {
-    window.localStorage.removeItem('name');
-    window.localStorage.removeItem('session');
+  private resetLocalStorage(): void {
+    localStorage.setItem('session', '');
+    localStorage.setItem('user', '');
+    localStorage.setItem('amHost', '');
+    localStorage.setItem('roomKey', '');
   }
 }

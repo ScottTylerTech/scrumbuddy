@@ -25,38 +25,6 @@ p {
   flex: 1;
 }
 
-.toolbar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  background-color: #1976d2;
-  color: white;
-  font-weight: 600;
-}
-
-.toolbar img {
-  margin: 0 16px;
-}
-
-.toolbar #twitter-logo {
-  height: 40px;
-  margin: 0 8px;
-}
-
-.toolbar #youtube-logo {
-  height: 40px;
-  margin: 0 16px;
-}
-
-.toolbar #twitter-logo:hover,
-.toolbar #youtube-logo:hover {
-  opacity: 0.8;
-}
-
 .main {
   display: flex;
   margin: 0 auto 32px;
@@ -116,29 +84,10 @@ p {
   margin-left: 60px;
 }
 
-.button-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  margin-top: 16px;
-  font-size: 20px;
-}
-
-.button {
-  border-radius: 4px;
-  margin-left: 8px;
-  margin-right: 8px;
-  text-align: center;
-  text-decoration: none;
-}
-
-.button-primary {
-  border-radius: 4px;
-  color: white;
-  background-color: #1976d2;
-  margin-left: 8px;
-  margin-right: 8px;
+.button.button-disabled {
+  background-color: #e0e0e0;
+  color: #9e9e9e;
+  cursor: not-allowed;
 }
 
 ::ng-deep .colorRed {

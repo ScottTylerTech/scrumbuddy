@@ -10,11 +10,8 @@ export class AppComponent implements OnInit {
   title = 'firebase-app';
 
   constructor(private router: Router) {
-    localStorage.setItem('session', '');
-    localStorage.setItem('userName', '');
-    localStorage.setItem('amHost', '');
-    localStorage.setItem('roomKey', '');
-    localStorage.setItem('currentUser', '');
+    this.resetLocalStorage();
+    localStorage.setItem('session', 'true');
   }
 
   ngOnInit(): void {
@@ -27,11 +24,14 @@ export class AppComponent implements OnInit {
   }
 
   public imgClick(): void {
-    localStorage.setItem('session', 'false');
-    localStorage.setItem('amHost', 'false');
-    localStorage.setItem('currentRoom', '');
-    localStorage.setItem('currentUser', '');
-
+    this.resetLocalStorage();
     this.router.navigateByUrl('/home');
+  }
+
+  private resetLocalStorage(): void {
+    localStorage.setItem('session', '');
+    localStorage.setItem('user', '');
+    localStorage.setItem('amHost', '');
+    localStorage.setItem('roomKey', '');
   }
 }

@@ -13,6 +13,8 @@ import { FormsModule } from '@angular/forms';
 import { RoomsComponent } from './rooms/rooms.component';
 import { HostComponent } from './host/host.component';
 import { VoteComponent } from './vote/vote.component';
+import { NgChartsModule } from 'ng2-charts';
+import { ChartComponent } from './chart/chart.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,8 @@ import { VoteComponent } from './vote/vote.component';
     HomeComponent,
     RoomsComponent,
     HostComponent,
-    VoteComponent
+    VoteComponent,
+    ChartComponent,
   ],
   imports: [
     BrowserModule,
@@ -28,15 +31,14 @@ import { VoteComponent } from './vote/vote.component';
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
-    FormsModule
+    FormsModule,
+    NgChartsModule,
   ],
-  exports: [
-    FormsModule
-  ],
+  exports: [FormsModule, NgChartsModule],
   providers: [
     AngularFireDatabase,
     // FireserviceService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

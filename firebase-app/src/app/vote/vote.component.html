@@ -1,22 +1,35 @@
+<!-- vote card -->
 <div
   style="display: flex; justify-content: start; margin-top: 60px; padding: 4px"
 >
   <div class="card card-shadow" style="justify-content: start">
     <div class="card-row">
       <h3>Host:</h3>
-      <h3>{{ room }}</h3>
+      <h3>{{ room.host }}</h3>
     </div>
     <div>
-      <button [disabled]="!amHost" (click)="callVote()">Call vote</button>
-    </div>
-    <div style="display: inline">
-      <h2>Votes:</h2>
-      <div *ngFor="let vote of votes$ | async">
-        <p>{{ vote }}</p>
-      </div>
+      <button
+        class="button"
+        [class.button-primary]="amHost"
+        [class.button-disabled]="!amHost"
+        [disabled]="!amHost"
+        (click)="callVote()"
+      >
+        Call vote
+      </button>
+      <button
+        class="button"
+        [class.button-primary]="amHost"
+        [class.button-disabled]="!amHost"
+        [disabled]="!amHost && isVoteCalled"
+        (click)="resetVote()"
+      >
+        Open vote
+      </button>
     </div>
   </div>
 </div>
+
 <div class="main">
   <div style="justify-content: center; display: flex">
     <!-- <h2>Voting in {{  }}</h2> -->
@@ -26,9 +39,9 @@
 > -->
   <div class="card-row">
     <div
-      class="card"
+      class="card card-shadow"
       style="
-        width: auto;
+        width: 200px;
         min-width: 200px;
         align-items: start;
         justify-content: start;
@@ -50,9 +63,18 @@
           {{ user.point }}
         </p>
       </div>
+      <div class="card-row">
+        <h2>Votes:</h2>
+        <p>{{ voteCount }}</p>
+      </div>
     </div>
+
     <!-- effort point card -->
-    <div #votingCard class="card" style="align-items: center; width: auto">
+    <div
+      #votingCard
+      class="card card-shadow"
+      style="align-items: center; width: auto"
+    >
       <h2>Cast Vote</h2>
       <p>Effort points</p>
       <div
@@ -60,7 +82,8 @@
         *ngFor="let number of effortPoints"
       >
         <button
-          [class.button-primary]="number == selectedButton"
+          [class.button-primary]="number == userSelection"
+          [disabled]="isVoteCalled"
           class="button"
           style="width: 48px; margin: 4px"
           (click)="castVote(number)"
@@ -71,6 +94,8 @@
     </div>
 
     <!-- chart -->
-    <div class="card" style="min-width: 50%"></div>
+    <div class="card card-shadow" style="width: 500px">
+      <app-chart [effortPoints]="effortPoints"></app-chart>
+    </div>
   </div>
 </div>
