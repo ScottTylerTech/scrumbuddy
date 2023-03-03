@@ -1,10 +1,10 @@
-<div class="content-home" role="main">
+<div class="content" style="margin-top: 5%">
   <div class="card card-shadow">
     <div style="display: block; margin: auto; padding-right: 33%; width: 100px">
       <input
         type="text"
         placeholder="Enter your name"
-        [(ngModel)]="name"
+        [(ngModel)]="user.name"
         name="name"
         required
       />
@@ -19,3 +19,11 @@
     </div>
   </div>
 </div>
+
+<!-- <div *ngIf="joinRoom">
+  <app-rooms [user]="user"></app-rooms>
+</div>
+
+<div *ngIf="hostRoom">
+  <app-host [user]="user"></app-host>
+</div> -->

@@ -1,5 +1,10 @@
 import { Timestamp, FieldValue } from '@firebase/firestore-types';
+import { IUser } from './IUser';
+
 export interface IRoom {
-    name: string;
-    dateCreated: Number | Timestamp | FieldValue;
+  createTime: Date;
+  host: string;
+  key: string;
+  roomName: string;
+  users: IUser[];
 }

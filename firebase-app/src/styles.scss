@@ -1,4 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+.content {
+  display: flex;
+  margin: 60px auto 32px;
+  padding: 0 16px;
+  // max-width: 960px;
+  flex-direction: column;
+  align-items: center;
+}
+
 .card-shadow {
   background: #ccc;
   box-shadow: 4px 3px 8px 1px #969696;
@@ -20,7 +29,8 @@
   border: 1px solid #eee;
   background-color: #fafafa;
   height: auto;
-  width: 250px;
+  width: auto;
+  min-width: 120px;
   margin: 0 8px 16px;
   padding: 4px;
   display: flex;
@@ -54,4 +64,11 @@
   margin-right: 8px;
   text-align: center;
   text-decoration: none;
+}
+.button-primary {
+  border-radius: 4px;
+  color: white;
+  background-color: #1976d2;
+  margin-left: 8px;
+  margin-right: 8px;
 }

@@ -1,10 +1,8 @@
-<div class="content">
+<div class="content" style="margin-top: 5%">
   <div>
-    <p>Room Selection</p>
-    <p>Logged in as {{ name }}</p>
+    <h2>Room Selection</h2>
+    <p>user.name</p>
   </div>
-
-  <!-- <div #roomButtons id="room-list"></div> -->
   <div *ngIf="roomCount === 0">
     <p>There are no rooms.</p>
     <button [routerLink]="['/host']">Click to host</button>
@@ -30,7 +28,7 @@
           <div class="room-card-row" style="justify-content: end">
             <button
               class="button-primary button-shadow"
-              (click)="joinRoom(room)"
+              (click)="joinRoom(room.key)"
             >
               Join
             </button>

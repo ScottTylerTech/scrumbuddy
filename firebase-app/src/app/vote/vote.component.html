@@ -1,10 +1,30 @@
-<div>
-  <div>
-    <p>Voting</p>
-    <p>Logged in as {{ userName }}</p>
+<div
+  style="display: flex; justify-content: start; margin-top: 60px; padding: 4px"
+>
+  <div class="card card-shadow" style="justify-content: start">
+    <div class="card-row">
+      <h3>Host:</h3>
+      <h3>{{ room }}</h3>
+    </div>
+    <div>
+      <button [disabled]="!amHost" (click)="callVote()">Call vote</button>
+    </div>
+    <div style="display: inline">
+      <h2>Votes:</h2>
+      <div *ngFor="let vote of votes$ | async">
+        <p>{{ vote }}</p>
+      </div>
+    </div>
   </div>
-
-  <div style="display: flex; flex-direction: row; align-items: left">
+</div>
+<div class="main">
+  <div style="justify-content: center; display: flex">
+    <!-- <h2>Voting in {{  }}</h2> -->
+  </div>
+  <!-- cards  -->
+  <!-- style="display: flex; flex-direction: row; justify-content: space-around"
+> -->
+  <div class="card-row">
     <div
       class="card"
       style="
@@ -22,7 +42,7 @@
         <h3>User</h3>
         <h3>Vote</h3>
       </div>
-      <div class="card-row" *ngFor="let user of roomUsers$ | async">
+      <div class="card-row" *ngFor="let user of roomUsersValueChanges$ | async">
         <p>
           {{ user.name }}
         </p>

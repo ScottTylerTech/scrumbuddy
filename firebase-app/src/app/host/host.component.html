@@ -1,9 +1,4 @@
-<div class="content">
-  <div>
-    <p>Host</p>
-    <p>Logged in as {{ userName }}</p>
-  </div>
-
+<div class="content" style="margin-top: 5%">
   <div *ngIf="!isRoomHosted">
     <div class="card">
       <div
@@ -26,16 +21,6 @@
   </div>
 
   <div *ngIf="isRoomHosted">
-    <p>{{ roomName }} is hosted!</p>
-    <div>
-      <button (click)="callVote()">Call vote</button>
-    </div>
-    <div style="display: inline">
-      <h2>Votes:</h2>
-      <div *ngFor="let vote of votes">
-        <p>{{ vote }}</p>
-      </div>
-    </div>
     <app-vote></app-vote>
   </div>
 </div>
