@@ -35,14 +35,18 @@ export class HostComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.router.events.subscribe((event: any) => {
-      if (event instanceof NavigationEnd && event.url != '/host') {
-        console.log('removing room and user from host');
-        this.removeUser(event);
-        // this.removeRoom(event);
-        localStorage.setItem('session', 'false');
-      }
-    });
+    // this.router.events.subscribe((event: any) => {
+    //   if (
+    //     !this.hasSession &&
+    //     event instanceof NavigationEnd &&
+    //     event.url != '/host'
+    //   ) {
+    //     console.log('removing room and user from host');
+    //     this.removeUser(event);
+    //     // this.removeRoom(event);
+    //     localStorage.setItem('session', 'false');
+    //   }
+    // });
   }
 
   public createRoom(): void {
@@ -75,34 +79,6 @@ export class HostComponent implements OnInit {
     window.localStorage.setItem('user', JSON.stringify(this.user));
     this.router.navigateByUrl('/vote');
   }
-
-  // public async callVote(): Promise<void> {
-  //   this.resetVote();
-  //   this.userRoom = window.localStorage.getItem('currentRoom') ?? '';
-  //   this.roomUsersRef = this.firebase.list('rooms/' + this.userRoom + '/users');
-  //   this.roomUsers$ = this.roomUsersRef.valueChanges();
-  //   this.roomUsers$.subscribe((users) => {
-  //     console.log('users', users);
-  //   });
-
-  //   this.votes = await lastValueFrom(
-  //     this.roomUsers$.pipe(
-  //       map((users) =>
-  //         users.map((user) => {
-  //           user.point;
-  //         })
-  //       )
-  //     )
-  //   );
-
-  //   console.log('votes', this.votes);
-  // }
-
-  // private resetVote(): void {
-  //   this.voteTotal = 0;
-  //   this.userRoom = window.localStorage.getItem('currentRoom') ?? '';
-  //   this.roomUsersRef = this.firebase.list('rooms/' + this.userRoom + '/users');
-  // }
 
   private removeUser(event: any): void {
     if (event.url == '/host') return;

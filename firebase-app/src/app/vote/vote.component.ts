@@ -88,6 +88,8 @@ export class VoteComponent implements OnInit {
     users: [],
   };
 
+  userDBRef: any;
+
   room$: Observable<any>;
   roomDBRef: any;
 
@@ -111,7 +113,13 @@ export class VoteComponent implements OnInit {
     // verify session
     if (!this.hasSession || userString === '' || this.roomKey === '') {
       console.log(
-        'no session, no user, no room key, redirecting to home from vote'
+        'session: ' +
+          this.hasSession +
+          ' user: ' +
+          userString +
+          'roomKey:, ' +
+          this.roomKey +
+          'redirecting to home from vote'
       );
       this.resetLocalStorage();
       this.router.navigateByUrl('/home');
@@ -128,6 +136,10 @@ export class VoteComponent implements OnInit {
     var newUser = this.roomUsersDBRef.push();
     this.user.key = newUser.key;
     newUser.set(this.user);
+
+    this.userDBRef = this.firebase.database.ref(
+      'rooms/' + this.roomKey + 'users/' + this.user.key
+    );
 
     // set user observable
     this.room$ = this.roomDBRef.once(
@@ -198,8 +210,16 @@ export class VoteComponent implements OnInit {
   ngOnInit(): void {
     // removes the user if navigating away from the vote page
     this.router.events.subscribe((event: any) => {
-      if (event instanceof NavigationEnd) {
-        this.removeUser(event);
+      if (event.url === '/home') {
+        this.removeUser();
+        // var ref = this.firebase.database.ref('/rooms/' + this.roomKey);
+        // ref.child('users/' + this.user.key).remove();
+        localStorage.setItem('session', 'false');
+      } else if (!this.hasSession && event instanceof NavigationEnd) {
+        this.removeUser();
+        localStorage.setItem('session', 'false');
+      } else if (this.hasSession && event instanceof NavigationStart) {
+        this.removeUser();
         localStorage.setItem('session', 'false');
       }
     });
@@ -293,17 +313,13 @@ export class VoteComponent implements OnInit {
     this.isVoteCalled = false;
   }
 
-  private removeUser(event: any): void {
-    if (event.url == '/vote') return;
-    // remove user from room
-    var userRef = this.firebase.database.ref(
-      'rooms/' + this.roomKey + '/users/' + this.userID
-    );
-    userRef.remove();
+  private removeUser(): void {
+    var ref = this.firebase.database.ref('/rooms/' + this.roomKey);
+    ref.child('users/' + this.user.key).remove();
   }
 
   private resetLocalStorage(): void {
-    this.removeUser({});
+    this.removeUser();
     localStorage.setItem('session', '');
     localStorage.setItem('user', '');
     localStorage.setItem('amHost', '');
@@ -313,7 +329,7 @@ export class VoteComponent implements OnInit {
   @HostListener('window:beforeunload')
   windowBeforeUnload() {
     localStorage.setItem('session', 'false');
-    this.removeUser({});
+    this.removeUser();
     this.router.navigateByUrl('/home');
   }
 }

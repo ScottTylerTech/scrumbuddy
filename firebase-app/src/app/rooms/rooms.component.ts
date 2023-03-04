@@ -15,7 +15,7 @@ import {
   AngularFirestore,
   AngularFirestoreCollection,
 } from '@angular/fire/compat/firestore';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { map, Observable, tap } from 'rxjs';
 import { IRoom } from '../entities/IRoom';
 import { IUser } from '../entities/IUser';
@@ -47,12 +47,24 @@ export class RoomsComponent implements OnInit {
 
     // verify session
     if (!this.hasSession) {
-      console.log('No session redirect from rooms');
+      console.log('Room: session: ' + this.hasSession);
       this.router.navigateByUrl('/home');
     }
   }
 
   ngOnInit(): void {
+    window.localStorage.setItem('session', 'true');
+    this.router.events.subscribe((event: any) => {
+      if (
+        !this.hasSession &&
+        event instanceof NavigationEnd &&
+        event.url != '/rooms'
+      ) {
+        console.log('removing room and user from ' + event.url);
+        this.resetLocalStorage();
+      }
+    });
+
     this.roomsRef$ = this.firebase.list('rooms');
     this.rooms$ = this.roomsRef$.valueChanges();
     this.rooms$.subscribe((res) => {
@@ -72,6 +84,13 @@ export class RoomsComponent implements OnInit {
     }
     const date = JSON.parse(value);
     return new Date(date);
+  }
+
+  private resetLocalStorage(): void {
+    localStorage.setItem('session', '');
+    localStorage.setItem('user', '');
+    localStorage.setItem('amHost', '');
+    localStorage.setItem('roomKey', '');
   }
 
   @HostListener('window:beforeunload')

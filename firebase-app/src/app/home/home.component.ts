@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { IUser } from '../entities/IUser';
 
 @Component({
@@ -10,11 +10,11 @@ import { IUser } from '../entities/IUser';
 })
 export class HomeComponent {
   user: IUser;
-  // joinRoom: boolean = false;
-  // hostRoom: boolean = false;
+  hasSession: boolean = false;
 
   constructor(private afs: AngularFirestore, private router: Router) {
     window.localStorage.setItem('session', 'true');
+    this.hasSession = localStorage.getItem('session') === 'true';
     this.user = {
       name: '',
       key: '',
@@ -22,7 +22,19 @@ export class HomeComponent {
     };
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // window.localStorage.setItem('session', 'true');
+    // this.router.events.subscribe((event: any) => {
+    //   if (
+    //     this.hasSession &&
+    //     event instanceof NavigationEnd &&
+    //     event.url != '/home'
+    //   ) {
+    //     console.log('removing room and user from ' + event.url);
+    //     this.resetLocalStorage();
+    //   }
+    // });
+  }
 
   public join(): void {
     if (this.user.name !== '') {
