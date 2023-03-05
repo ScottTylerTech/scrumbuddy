@@ -54,16 +54,16 @@ export class RoomsComponent implements OnInit {
 
   ngOnInit(): void {
     window.localStorage.setItem('session', 'true');
-    this.router.events.subscribe((event: any) => {
-      if (
-        !this.hasSession &&
-        event instanceof NavigationEnd &&
-        event.url != '/rooms'
-      ) {
-        console.log('removing room and user from ' + event.url);
-        this.resetLocalStorage();
-      }
-    });
+    // this.router.events.subscribe((event: any) => {
+    //   if (
+    //     !this.hasSession &&
+    //     event instanceof NavigationEnd &&
+    //     event.url != '/rooms'
+    //   ) {
+    //     console.log('removing room and user from ' + event.url);
+    //     this.resetLocalStorage();
+    //   }
+    // });
 
     this.roomsRef$ = this.firebase.list('rooms');
     this.rooms$ = this.roomsRef$.valueChanges();

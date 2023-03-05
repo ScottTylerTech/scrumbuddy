@@ -23,6 +23,7 @@ export class HomeComponent {
   }
 
   ngOnInit(): void {
+    window.localStorage.setItem('session', 'true');
     // window.localStorage.setItem('session', 'true');
     // this.router.events.subscribe((event: any) => {
     //   if (

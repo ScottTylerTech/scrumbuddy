@@ -24,11 +24,11 @@ export class HostComponent implements OnInit {
     this.user = JSON.parse(localStorage.getItem('user') ?? '');
 
     // verify session
-    if (this.hasSession == null || this.user.name === '') {
-      console.log('No user, no session, redirect from host');
-      // no user, no session, redirect
-      this.router.navigateByUrl('/home');
-    }
+    // if (this.hasSession == null || this.user.name === '') {
+    //   console.log('No user, no session, redirect from host');
+    //   // no user, no session, redirect
+    //   this.router.navigateByUrl('/home');
+    // }
 
     // set references to database
     this.roomDBRef = this.firebase.database.ref('rooms');
@@ -74,7 +74,7 @@ export class HostComponent implements OnInit {
       return;
     }
 
-    newUser.set(this.user);
+    // newUser.set(this.user);
     window.localStorage.setItem('roomKey', this.room.key);
     window.localStorage.setItem('user', JSON.stringify(this.user));
     this.router.navigateByUrl('/vote');

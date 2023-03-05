@@ -5,14 +5,14 @@
   <div class="card card-shadow" style="justify-content: start">
     <div class="card-row">
       <h3>Host:</h3>
-      <h3>{{ room.host }}</h3>
+      <h3>{{ user.name }}</h3>
     </div>
     <div>
       <button
         class="button"
         [class.button-primary]="amHost"
-        [class.button-disabled]="!amHost"
-        [disabled]="!amHost"
+        [class.button-disabled]="!amHost || isVoteEnded"
+        [disabled]="!amHost || isVoteCalled"
         (click)="callVote()"
       >
         Call vote
@@ -20,8 +20,8 @@
       <button
         class="button"
         [class.button-primary]="amHost"
-        [class.button-disabled]="!amHost"
-        [disabled]="!amHost && isVoteCalled"
+        [class.button-disabled]="!amHost || !isVoteEnded"
+        [disabled]="!amHost && !isVoteEnded"
         (click)="resetVote()"
       >
         Open vote
@@ -55,7 +55,7 @@
         <h3>User</h3>
         <h3>Vote</h3>
       </div>
-      <div class="card-row" *ngFor="let user of roomUsersValueChanges$ | async">
+      <div class="card-row" *ngFor="let user of users$ | async">
         <p>
           {{ user.name }}
         </p>
@@ -77,13 +77,16 @@
     >
       <h2>Cast Vote</h2>
       <p>Effort points</p>
+      <div *ngIf="isVoteCalled">
+        {{ result }}
+      </div>
       <div
         style="display: flexbox; flex-wrap: wrap"
         *ngFor="let number of effortPoints"
       >
         <button
           [class.button-primary]="number == userSelection"
-          [disabled]="isVoteCalled"
+          [disabled]="isVoteEnded"
           class="button"
           style="width: 48px; margin: 4px"
           (click)="castVote(number)"
@@ -95,7 +98,10 @@
 
     <!-- chart -->
     <div class="card card-shadow" style="width: 500px">
-      <app-chart [effortPoints]="effortPoints"></app-chart>
+      <app-chart
+        [effortPoints]="effortPoints"
+        [voteDistribution]="voteDistribution"
+      ></app-chart>
     </div>
   </div>
 </div>
