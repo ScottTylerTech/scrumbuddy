@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { NavigationEnd, Router } from '@angular/router';
+import { IUser } from './entities/IUser';
 
 @Component({
   selector: 'app-root',
@@ -8,23 +10,25 @@ import { NavigationEnd, Router } from '@angular/router';
 })
 export class AppComponent implements OnInit {
   title = 'firebase-app';
+  user: IUser;
 
   constructor(private router: Router) {
     this.resetLocalStorage();
-    localStorage.setItem('session', 'true');
   }
 
   ngOnInit(): void {
-    this.router.events.subscribe((event: any) => {
-      if (event instanceof NavigationEnd) {
-        const urlParams = event.url.split(';');
-        this.title = urlParams[0].slice(1);
-      }
-    });
+    // this.router.navigate(['']);
+    // this.router.events.subscribe((event: any) => {
+    //   if (event instanceof NavigationEnd) {
+    //     const urlParams = event.url.split(';');
+    //     this.title = urlParams[0].slice(1);
+    //   }
+    // });
   }
 
   public imgClick(): void {
     this.resetLocalStorage();
+    localStorage.setItem('session', '');
     this.router.navigateByUrl('/home');
   }
 

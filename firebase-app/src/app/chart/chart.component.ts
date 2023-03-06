@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Chart, ChartType } from 'chart.js';
+import { ChartConfiguration } from 'chart.js';
+import { IVote } from '../entities/IVote';
+import { BaseChartDirective } from 'ng2-charts';
+import { finalize, interval, Subject, takeUntil, timer } from 'rxjs';
 
 @Component({
   selector: 'app-chart',
@@ -7,82 +10,47 @@ import { Chart, ChartType } from 'chart.js';
   styleUrls: ['./chart.component.scss'],
 })
 export class ChartComponent implements OnInit {
-  @Input() effortPoints: number[] = [];
+  @Input() effortPoints: string[] = [];
   @Input() voteDistribution: number[] = [];
+  @Input() voteData: IVote[] = [];
+  @Input() callVote: Subject<number[]> = new Subject();
+  @Input() result: number;
+  @Input() isCountingDown: boolean = false;
 
-  constructor() {}
+  public barChartLegend = true;
+  public barChartPlugins = [];
+
+  public barChartData: ChartConfiguration<'bar'>['data'];
+
+  public barChartOptions: ChartConfiguration<'bar'>['options'] = {
+    responsive: false,
+  };
+
+  public barChartLabels: String[] = this.effortPoints;
+
+  constructor() {
+    this.voteDistribution = [0, 2, 1, 3, 1, 0, 0, 0, 0, 0];
+    this.effortPoints = ['0', '1', '2', '3', '5', '8', '13', '21', '34', '55'];
+    // this.isCountingDown = true;
+    // this.result = 3;
+    // this.barChartData = {
+    //   labels: this.effortPoints,
+    //   datasets: [{ data: this.voteDistribution, label: 'Series A' }],
+    // };
+  }
+
+  createChart(vD: number[]): void {
+    this.isCountingDown = false;
+    this.barChartData = {
+      labels: this.effortPoints,
+      datasets: [{ data: vD, label: 'Series A' }],
+    };
+  }
 
   ngOnInit(): void {
-    // chart setup
-    var canvas = <HTMLCanvasElement>document.getElementById('barChart');
-    var context = <CanvasRenderingContext2D>canvas.getContext('2d');
-    var line: ChartType = 'bar';
-    var chart = new Chart(context, {
-      type: line,
-      data: {
-        labels: this.effortPoints,
-        datasets: [
-          {
-            label: '# of Votes',
-            data: this.voteDistribution,
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)',
-              'rgba(255, 159, 64, 0.2)',
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)',
-              'rgba(255, 159, 64, 1)',
-            ],
-            borderWidth: 1,
-          },
-        ],
-      },
+    this.callVote.subscribe((v) => {
+      this.createChart(v);
+      console.log('value is changing', v);
     });
-
-    // var polarcanvas = <HTMLCanvasElement>(
-    //   document.getElementById('chartpolarArea')
-    // );
-    // var polarcontext = <CanvasRenderingContext2D>canvas.getContext('2d');
-    // var polarArea: ChartType = 'polarArea';
-    // var areaChart = new Chart(polarcontext, {
-    //   type: polarArea,
-    //   data: {
-    //     labels: this.effortPoints,
-    //     datasets: [
-    //       {
-    //         label: '# of Votes',
-    //         data: [12, 19, 3, 5, 2, 3],
-    //         backgroundColor: [
-    //           'rgba(255, 99, 132, 0.2)',
-    //           'rgba(54, 162, 235, 0.2)',
-    //           'rgba(255, 206, 86, 0.2)',
-    //           'rgba(75, 192, 192, 0.2)',
-    //           'rgba(153, 102, 255, 0.2)',
-    //           'rgba(255, 159, 64, 0.2)',
-    //         ],
-    //         borderColor: [
-    //           'rgba(255, 99, 132, 1)',
-    //           'rgba(54, 162, 235, 1)',
-    //           'rgba(255, 206, 86, 1)',
-    //           'rgba(75, 192, 192, 1)',
-    //           'rgba(153, 102, 255, 1)',
-    //           'rgba(255, 159, 64, 1)',
-    //         ],
-    //         borderWidth: 1,
-    //       },
-    //     ],
-    //   },
-    // });
-
-    //--------------------------------------------------------------------------------//
-    // chart setup
   }
 }

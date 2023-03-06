@@ -57,6 +57,7 @@ export class HostComponent implements OnInit {
     this.room.roomName = this.room.roomName;
     this.room.key = newRoom.key;
     this.room.users = [];
+    this.room.isVoting = false;
 
     localStorage.setItem('roomKey', this.room.key);
     localStorage.setItem('amHost', 'true');

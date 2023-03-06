@@ -13,7 +13,7 @@ export class HomeComponent {
   hasSession: boolean = false;
 
   constructor(private afs: AngularFirestore, private router: Router) {
-    window.localStorage.setItem('session', 'true');
+    // window.localStorage.setItem('session', 'true');
     this.hasSession = localStorage.getItem('session') === 'true';
     this.user = {
       name: '',
@@ -23,7 +23,7 @@ export class HomeComponent {
   }
 
   ngOnInit(): void {
-    window.localStorage.setItem('session', 'true');
+    // window.localStorage.setItem('session', 'true');
     // window.localStorage.setItem('session', 'true');
     // this.router.events.subscribe((event: any) => {
     //   if (

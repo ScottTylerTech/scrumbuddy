@@ -7,14 +7,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
-// import { FireserviceService } from './fireservice.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RoomsComponent } from './rooms/rooms.component';
 import { HostComponent } from './host/host.component';
 import { VoteComponent } from './vote/vote.component';
-import { NgChartsModule } from 'ng2-charts';
 import { ChartComponent } from './chart/chart.component';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -34,11 +33,8 @@ import { ChartComponent } from './chart/chart.component';
     FormsModule,
     NgChartsModule,
   ],
-  exports: [FormsModule, NgChartsModule],
-  providers: [
-    AngularFireDatabase,
-    // FireserviceService
-  ],
+  exports: [FormsModule],
+  providers: [AngularFireDatabase],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

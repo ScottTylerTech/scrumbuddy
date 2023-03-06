@@ -11,8 +11,8 @@
       <button
         class="button"
         [class.button-primary]="amHost"
-        [class.button-disabled]="!amHost || isVoteEnded"
-        [disabled]="!amHost || isVoteCalled"
+        [class.button-disabled]="!amHost || isVoteCalled"
+        [disabled]="!amHost && isVoteCalled"
         (click)="callVote()"
       >
         Call vote
@@ -101,6 +101,10 @@
       <app-chart
         [effortPoints]="effortPoints"
         [voteDistribution]="voteDistribution"
+        [voteData]="voteData"
+        [callVote]="changingValue"
+        [result]="result"
+        [isCountingDown]="isVoteCalled"
       ></app-chart>
     </div>
   </div>

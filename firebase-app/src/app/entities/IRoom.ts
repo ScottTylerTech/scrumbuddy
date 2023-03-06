@@ -7,4 +7,5 @@ export interface IRoom {
   key: string;
   roomName: string;
   users: IUser[];
+  isVoting: boolean;
 }

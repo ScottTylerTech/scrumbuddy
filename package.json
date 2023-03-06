@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "@angular/cli": "^15.2.0",
-    "chart.js": "^4.2.1"
+    "@angular/cli": "^15.2.0"
   }
 }

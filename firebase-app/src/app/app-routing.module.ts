@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ChartComponent } from './chart/chart.component';
 import { HomeComponent } from './home/home.component';
 import { HostComponent } from './host/host.component';
 import { RoomsComponent } from './rooms/rooms.component';
@@ -13,11 +14,12 @@ const routes: Routes = [
   { path: 'Rooms', redirectTo: 'rooms', pathMatch: 'full' },
   { path: 'host', component: HostComponent },
   { path: 'vote', component: VoteComponent },
+  { path: 'chart', component: ChartComponent },
   // { path: '**', redirectTo: 'home', pathMatch: 'full' }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

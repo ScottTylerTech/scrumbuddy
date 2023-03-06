@@ -1,12 +1,38 @@
 <h1>Effort point distribution</h1>
-<div>
-  <canvas id="barChart" width="auto" height="auto"></canvas>
-</div>
 
-<div>
-  <h2>Voting distribution</h2>
-  <p>{{ effortPoints }}</p>
-  <p>{{ voteDistribution }}</p>
+<div class="card">
+  <div *ngIf="isCountingDown">
+    <h1 style="font-size: 80px">{{ result }}</h1>
+  </div>
+  <div *ngIf="!isCountingDown">
+    <canvas
+      baseChart
+      [data]="barChartData"
+      [labels]="effortPoints"
+      [type]="'bar'"
+    >
+    </canvas>
+  </div>
+
+  <div style="display: flex; flex-direction: column">
+    <h2>Voting distribution</h2>
+    <div class="card-row" style="width: 240px">
+      <div
+        *ngFor="let ep of effortPoints"
+        style="width: 10%; text-align: center"
+      >
+        <div style="outline: 1px solid black">{{ ep }}</div>
+      </div>
+    </div>
+    <div class="card-row"  style="width: 240px">
+      <div
+        *ngFor="let vd of voteDistribution"
+        style="width: 10%; text-align: center"
+      >
+        <div style="outline: 1px solid black">{{ vd }}</div>
+      </div>
+    </div>
+  </div>
 </div>
 <!-- <div>
   <canvas id="chartpolarArea" width="auto" height="auto"></canvas>

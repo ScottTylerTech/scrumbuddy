@@ -43,17 +43,9 @@ export class RoomsComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     // get local storage
-    this.hasSession = localStorage.getItem('session') === 'true';
-
-    // verify session
-    if (!this.hasSession) {
-      console.log('Room: session: ' + this.hasSession);
-      this.router.navigateByUrl('/home');
-    }
   }
 
   ngOnInit(): void {
-    window.localStorage.setItem('session', 'true');
     // this.router.events.subscribe((event: any) => {
     //   if (
     //     !this.hasSession &&
@@ -94,8 +86,5 @@ export class RoomsComponent implements OnInit {
   }
 
   @HostListener('window:beforeunload')
-  windowBeforeUnload() {
-    // end session if navigating away from ScrumBuddy
-    localStorage.setItem('session', 'false');
-  }
+  windowBeforeUnload() {}
 }
