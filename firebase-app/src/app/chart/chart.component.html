@@ -1,39 +1,68 @@
-<h1>Effort point distribution</h1>
+<div style="max-height: 25vh; display: flex; flex-direction: column">
+  <h1 style="text-align: center; margin: 8px 0; padding: 0">
+    Effort point distribution
+  </h1>
 
-<div class="card">
-  <div *ngIf="isCountingDown">
-    <h1 style="font-size: 80px">{{ result }}</h1>
-  </div>
-  <div *ngIf="!isCountingDown">
-    <canvas
-      baseChart
-      [data]="barChartData"
-      [labels]="effortPoints"
-      [type]="'bar'"
-    >
-    </canvas>
-  </div>
+  <canvas
+    baseChart
+    [data]="barChartData"
+    [labels]="effortPoints"
+    [type]="'bar'"
+  >
+  </canvas>
 
-  <div style="display: flex; flex-direction: column">
+  <div style="display: flex; flex-direction: column; align-items: center">
     <h2>Voting distribution</h2>
-    <div class="card-row" style="width: 240px">
-      <div
-        *ngFor="let ep of effortPoints"
-        style="width: 10%; text-align: center"
-      >
-        <div style="outline: 1px solid black">{{ ep }}</div>
+    <div class="card-row" style="width: 75%">
+      <h3>Total votes</h3>
+      <div>{{ voterCount }}</div>
+    </div>
+    <div class="card-row" style="width: 75%">
+      <h3>Min vote</h3>
+      <div>{{ minPoint }}</div>
+    </div>
+
+    <div class="card-row" style="width: 75%">
+      <div *ngFor="let v of minVoter" class="card-row">
+        <div>{{ v.name }}, &nbsp;</div>
       </div>
     </div>
-    <div class="card-row"  style="width: 240px">
-      <div
-        *ngFor="let vd of voteDistribution"
-        style="width: 10%; text-align: center"
-      >
-        <div style="outline: 1px solid black">{{ vd }}</div>
+
+    <div class="card-row" style="width: 75%">
+      <h3>Mode vote</h3>
+      <div>{{ mode }}</div>
+    </div>
+
+    <div class="card-row" style="width: 75%">
+      <h3>Max vote</h3>
+      <div>{{ maxPoint }}</div>
+    </div>
+
+    <div class="card-row" style="width: 75%">
+      <div *ngFor="let v of maxVoter" class="card-row">
+        <div>{{ v.name }}, &nbsp;</div>
+      </div>
+    </div>
+
+    <div class="card-row" style="width: 75%">
+      <h3>Users not voted</h3>
+      <div>{{ missedCount }}</div>
+    </div>
+
+    <div class="card-row" style="width: 75%">
+      <div *ngFor="let v of missedUsers" class="card-row" style="width: auto">
+        <div>{{ v.name }}, &nbsp;</div>
       </div>
     </div>
   </div>
 </div>
-<!-- <div>
-  <canvas id="chartpolarArea" width="auto" height="auto"></canvas>
-</div> -->
+
+<!-- style="
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: space-between;
+margin: auto;
+height: auto;
+max-height: 45vh;
+" -->

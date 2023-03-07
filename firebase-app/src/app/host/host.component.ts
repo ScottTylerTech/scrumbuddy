@@ -10,7 +10,6 @@ import { IUser } from '../entities/IUser';
 @Component({
   selector: 'app-host',
   templateUrl: './host.component.html',
-  styleUrls: ['./host.component.scss'],
 })
 export class HostComponent implements OnInit {
   user: IUser;
@@ -20,6 +19,7 @@ export class HostComponent implements OnInit {
 
   constructor(private router: Router, private firebase: AngularFireDatabase) {
     // get from local storage
+    this.room.roomName = '';
     this.hasSession = localStorage.getItem('session');
     this.user = JSON.parse(localStorage.getItem('user') ?? '');
 
@@ -101,8 +101,8 @@ export class HostComponent implements OnInit {
   windowBeforeUnload() {
     // remove room if the user closes window
     // do NOT remove if window close is due to starting vote
-    localStorage.setItem('amHost', 'false');
-    var roomRef = this.firebase.database.ref('rooms/' + this.room.key);
+    // localStorage.setItem('amHost', 'false');
+    // var roomRef = this.firebase.database.ref('rooms/' + this.room.key);
     // roomRef.remove();
   }
 }

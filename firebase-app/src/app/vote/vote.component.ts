@@ -47,24 +47,15 @@ import { ChartComponent } from '../chart/chart.component';
   styleUrls: ['./vote.component.scss'],
 })
 export class VoteComponent implements OnInit {
-  changingValue: Subject<number[]> = new Subject();
+  changingValue: Subject<IUser[]> = new Subject();
+  voteListen$: Observable<any>;
+
   roomRef: any;
   roomValueChanges$: Observable<any>;
   pointRef: any;
 
   //----
-  effortPoints: string[] = [
-    '0',
-    '1',
-    '2',
-    '3',
-    '5',
-    '8',
-    '13',
-    '21',
-    '34',
-    '55',
-  ];
+  effortPoints: string[] = ['1', '2', '3', '5', '8', '13', '21', '34', '55'];
 
   // local storage
   hasSession: boolean = false;
@@ -77,6 +68,7 @@ export class VoteComponent implements OnInit {
 
   // room
   room$: Observable<any>;
+  roomName: string = '';
   roomDBRef: any;
 
   // room users
@@ -90,7 +82,7 @@ export class VoteComponent implements OnInit {
   isVoteCalled: boolean = false;
   isVoteEnded: boolean = false;
   voteCount: number = 0;
-  voteDistribution: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  voteDistribution: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
   voteData: IVote[] = [];
   // votes: any[] = [];
   votes$: Observable<number[]>;
@@ -133,10 +125,19 @@ export class VoteComponent implements OnInit {
 
     this.roomDBRef = this.firebase.database.ref('rooms/' + this.roomKey);
     this.room$ = this.firebase.object('rooms/' + this.roomKey).valueChanges();
+    this.voteListen$ = this.firebase
+      .object('rooms/' + this.roomKey + '/isVoting')
+      .valueChanges();
+    this.voteListen$.subscribe((val) => {
+      if (val) {
+        this.changingValue.next(this.users);
+      }
+    });
 
     this.room$.subscribe((room: IRoom) => {
-      this.isVoteEnded = room.isVoting;
-      console.log('room is voting: ', this.isVoteEnded);
+      // this.isVoteCalled = room.isVoting;
+      this.roomName = room.roomName;
+      this.isVoteCalled = room.isVoting;
     });
     // parse and create user
     this.user = JSON.parse(userString) as IUser;
@@ -157,16 +158,16 @@ export class VoteComponent implements OnInit {
       var vc = users.filter((user) => user.points != 0);
       this.voteCount = vc.length;
       this.userCount = users.length;
-      console.log('users: ', users);
+      // console.log('users: ', users);
     });
   }
 
-  private errData(err: any) {
-    console.log('Error!');
+  public clickBtn() {
+    console.log('click');
   }
 
   tellChild() {
-    this.changingValue.next(this.voteDistribution);
+    this.changingValue.next(this.users);
   }
 
   ngOnInit(): void {
@@ -187,97 +188,60 @@ export class VoteComponent implements OnInit {
   }
 
   public castVote(point: string): void {
+    this.userSelection = point;
+    console.log('selected button: ', point);
     var updates: any = {};
     updates['rooms/' + this.roomKey + '/users/' + this.user.key + '/points'] =
       Number(point);
 
     this.firebase.database.ref().update(updates);
-    this.userSelection = point;
-    console.log('selected button: ', point);
   }
 
-  public async callVote(): Promise<void> {
+  public callVote(): void {
     if (!this.amHost) return;
     this.isVoteCalled = true;
+    var updates: any = {};
+    updates['rooms/' + this.roomKey + '/isVoting'] = this.isVoteCalled;
+    this.firebase.database.ref().update(updates);
 
-    const date = new Date();
-    date.setSeconds(date.getSeconds() + 3);
-    const source = interval(1000);
-    source
-      .pipe(
-        takeUntil(timer(5000)),
-        finalize(async () => {
-          this.isVoteCalled = false;
-          this.isVoteEnded = true;
-          var updates: any = {};
-          updates['rooms/' + this.roomKey + '/isVoting'] = this.isVoteEnded;
-          this.firebase.database.ref().update(updates);
-          console.log('vote ended:' + this.isVoteEnded);
-          await this.calculateResult();
-          this.changingValue.next(this.voteDistribution);
-        })
-      )
-      .subscribe((val) => (this.result = 3 - val));
-  }
+    // await this.calculateResult();
+    // this.changingValue.next(this.users);
 
-  private async calculateResult(): Promise<any> {
-    // effortPoints: number[] = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55];
-    this.missedVotes = [];
-    this.voteDistribution = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    this.users.forEach((user) => {
-      switch (user.points) {
-        case 0:
-          this.voteDistribution[0]++;
-          this.missedVotes.push(user);
-          break;
-        case 1:
-          this.voteDistribution[1]++;
-          break;
-        case 2:
-          this.voteDistribution[2]++;
-          break;
-        case 3:
-          this.voteDistribution[3]++;
-          break;
-        case 5:
-          this.voteDistribution[4]++;
-          break;
-        case 8:
-          this.voteDistribution[5]++;
-          break;
-        case 13:
-          this.voteDistribution[6]++;
-          break;
-        case 21:
-          this.voteDistribution[7]++;
-          break;
-        case 34:
-          this.voteDistribution[8]++;
-          break;
-        case 55:
-          this.voteDistribution[9]++;
-          break;
-      }
-    });
-
-    this.voteData = [];
-    for (let i = 0; i < this.voteDistribution.length; i++) {
-      this.voteData.push({
-        label: this.effortPoints[i].toString(),
-        data: this.voteDistribution[i],
-      });
-    }
+    // for count down timer
+    // const date = new Date();
+    // date.setSeconds(date.getSeconds() + 3);
+    // const source = interval(1000);
+    // source
+    //   .pipe(
+    //     takeUntil(timer(5000)),
+    //     finalize(async () => {
+    //       this.isVoteCalled = false;
+    //       this.isVoteEnded = true;
+    //       var updates: any = {};
+    //       updates['rooms/' + this.roomKey + '/isVoting'] = this.isVoteEnded;
+    //       this.firebase.database.ref().update(updates);
+    //       console.log('vote ended:' + this.isVoteEnded);
+    //       await this.calculateResult();
+    //       this.changingValue.next(this.voteDistribution);
+    //     })
+    //   )
+    //   .subscribe((val) => (this.result = 3 - val));
   }
 
   public resetVote(): void {
     this.isVoteCalled = false;
-    this.isVoteEnded = false;
     var updates: any = {};
     this.users.forEach((user) => {
       updates['rooms/' + this.roomKey + '/users/' + user.key + '/points'] = 0;
     });
+    updates['rooms/' + this.roomKey + '/isVoting'] = this.isVoteCalled;
     this.firebase.database.ref().update(updates);
     this.userSelection = '';
+  }
+
+  public leaveRoom(): void {
+    this.resetLocalStorage();
+    this.router.navigateByUrl('/home');
   }
 
   private removeUser(): void {
@@ -299,11 +263,11 @@ export class VoteComponent implements OnInit {
 
   @HostListener('window:beforeunload')
   windowBeforeUnload() {
-    this.resetLocalStorage();
-    this.router.navigateByUrl('/home');
+    // this.resetLocalStorage();
+    // this.router.navigateByUrl('/home');
   }
   @HostListener('window:refresh') windowRefresh() {
-    this.resetLocalStorage();
-    this.router.navigateByUrl('/home');
+    // this.resetLocalStorage();
+    // this.router.navigateByUrl('/home');
   }
 }

@@ -7,19 +7,10 @@
   flex-direction: column;
   align-items: center;
 }
-
 .card-shadow {
   background: #ccc;
   box-shadow: 4px 3px 8px 1px #969696;
   -webkit-box-shadow: 4px 3px 8px 1px #969696;
-  width: auto;
-  height: auto;
-}
-
-.button-shadow {
-  background: #ccc;
-  box-shadow: 2px 3px 4px 1px #969696;
-  -webkit-box-shadow: 2px 3px 4px 1px #969696;
   width: auto;
   height: auto;
 }
@@ -38,7 +29,6 @@
   justify-content: space-between;
   align-items: center;
   transition: all 0.2s ease-in-out;
-  line-height: 24px;
 }
 
 .card-row {
@@ -57,18 +47,74 @@
   padding: 1em;
 }
 
+.button-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+  font-size: 16px;
+}
+
 .button {
   border-radius: 4px;
   background-color: gainsboro;
   margin-left: 8px;
   margin-right: 8px;
   text-align: center;
-  text-decoration: none;
+  width: 96px;
+  height: 36px;
 }
+
+.button:disabled {
+  border-radius: 4px;
+  color: white;
+  background-color: gainsboro;
+  border-color: red;
+  margin-left: 8px;
+  margin-right: 8px;
+  pointer-events: none;
+}
+
+.button:hover {
+  border-radius: 6px;
+  background-color: seagreen;
+  color: white;
+  transform: scale(1.1, 1.1);
+  -webkit-transform: scale(1.1, 1.1);
+  -moz-transform: scale(1.1, 1.1);
+}
+
 .button-primary {
   border-radius: 4px;
   color: white;
   background-color: #1976d2;
   margin-left: 8px;
   margin-right: 8px;
+  width: 96px;
+  height: 36px;
+}
+
+.button-primary:disabled {
+  border-radius: 4px;
+  color: white;
+  background-color: gainsboro;
+  border-color: red;
+  margin-left: 8px;
+  margin-right: 8px;
+  pointer-events: none;
+}
+.button-primary:hover {
+  background-color: seagreen;
+  transform: scale(1.1, 1.1);
+  -webkit-transform: scale(1.1, 1.1);
+  -moz-transform: scale(1.1, 1.1);
+}
+
+.button-shadow {
+  background: #ccc;
+  box-shadow: 2px 3px 4px 1px #969696;
+  -webkit-box-shadow: 2px 3px 4px 1px #969696;
+  width: auto;
+  height: auto;
 }

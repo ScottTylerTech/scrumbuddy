@@ -1,7 +1,7 @@
 <div class="content">
-  <div class="card card-shadow">
-    <div style="display: block; margin: auto; padding-right: 33%; width: 100px">
-      <h2>Name</h2>
+  <div class="card card-shadow" style="width: 25vw; justify-content: center">
+    <h2>Name</h2>
+    <div style="width: 50%">
       <input
         type="text"
         placeholder="Enter your name"
@@ -12,10 +12,18 @@
     </div>
     <div class="button-row">
       <div>
-        <button class="button-row button" (click)="join()">Join</button>
+        <button class="button" [disabled]="user.name === ''" (click)="join()">
+          Join
+        </button>
       </div>
       <div>
-        <button class="button-row button-primary" (click)="host()">Host</button>
+        <button
+          class="button-primary"
+          [disabled]="user.name === ''"
+          (click)="host()"
+        >
+          Host
+        </button>
       </div>
     </div>
   </div>

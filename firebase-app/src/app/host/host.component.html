@@ -1,14 +1,14 @@
 <div class="content" style="margin-top: 5%">
-  <div class="card" style="min-width: 200px; margin-top: 8px">
+  <div class="card card-shadow" style="width: 25vw; justify-content: center">
     <!-- <div
         style="display: block; margin: auto; padding-right: 33%; width: 100px"
       >
         <div> -->
-    <div style="margin-top: 8px">
+    <div>
       <h2>Create room</h2>
     </div>
 
-    <div style="margin-top: 8px">
+    <div>
       <input
         type="text"
         placeholder="Enter room name"
@@ -18,8 +18,12 @@
       />
     </div>
 
-    <div style="margin-top: 8px">
-      <button class="button-row button-primary" (click)="createRoom()">
+    <div class="button-row">
+      <button
+        class="button-primary"
+        [disabled]="room.roomName === ''"
+        (click)="createRoom()"
+      >
         Create room
       </button>
     </div>

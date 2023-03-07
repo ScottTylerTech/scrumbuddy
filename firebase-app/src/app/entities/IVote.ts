@@ -1,4 +1,4 @@
 export interface IVote {
-  label: string;
-  data: number;
+  name: string;
+  points: number;
 }

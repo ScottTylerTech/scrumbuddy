@@ -13,11 +13,11 @@ export class AppComponent implements OnInit {
   user: IUser;
 
   constructor(private router: Router) {
-    this.resetLocalStorage();
+    // this.resetLocalStorage();
   }
 
   ngOnInit(): void {
-    // this.router.navigate(['']);
+    // this.router.navigate(['/home']);
     // this.router.events.subscribe((event: any) => {
     //   if (event instanceof NavigationEnd) {
     //     const urlParams = event.url.split(';');

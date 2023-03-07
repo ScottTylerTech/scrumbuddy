@@ -7,7 +7,7 @@ export const environment = {
     projectId: 'scrumbuddy-acc97',
     storageBucket: 'scrumbuddy-acc97.appspot.com',
     messagingSenderId: '285767092754',
-    appId: '1:285767092754:web:80c167933e76984c2b66cb',
-    measurementId: 'G-J53DTTP1V0',
+    appId: '1:285767092754:web:956fceb737dd78c22b66cb',
+    measurementId: 'G-PMLY1656VZ',
   },
 };

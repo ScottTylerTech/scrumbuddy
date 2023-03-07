@@ -6,7 +6,6 @@ import { IUser } from '../entities/IUser';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
   user: IUser;
@@ -57,7 +56,7 @@ export class HomeComponent {
 
   @HostListener('window:beforeunload')
   windowBeforeUnload() {
-    this.resetLocalStorage();
+    // this.resetLocalStorage();
   }
 
   private resetLocalStorage(): void {

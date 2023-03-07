@@ -1,51 +1,56 @@
 <!-- vote card -->
 <div
-  style="display: flex; justify-content: start; margin-top: 60px; padding: 4px"
+  class="card-row"
+  style="align-items: center; justify-content: center; margin: 80px 0 16px"
 >
-  <div class="card card-shadow" style="justify-content: start">
+  <!-- host tools  -->
+  <div class="card card-shadow" style="margin-right: 5vw">
+    <h3>Host tools</h3>
     <div class="card-row">
       <h3>Host:</h3>
       <h3>{{ user.name }}</h3>
     </div>
-    <div>
+    <div class="card-row">
+      <h3>Room:</h3>
+      <h3>{{ roomName }}</h3>
+    </div>
+    <div class="card-row">
       <button
-        class="button"
-        [class.button-primary]="amHost"
-        [class.button-disabled]="!amHost || isVoteCalled"
-        [disabled]="!amHost && isVoteCalled"
+        class="button-primary"
+        [disabled]="!amHost || isVoteCalled"
         (click)="callVote()"
       >
         Call vote
       </button>
+      <!-- [class.button-disabled]="!amHost || !isVoteEnded" -->
       <button
-        class="button"
-        [class.button-primary]="amHost"
-        [class.button-disabled]="!amHost || !isVoteEnded"
-        [disabled]="!amHost && !isVoteEnded"
+        class="button-primary"
+        [disabled]="!amHost || !isVoteCalled"
         (click)="resetVote()"
       >
         Open vote
       </button>
     </div>
   </div>
+
+  <!-- room tool -->
+  <div
+    class="card card-shadow"
+    style="margin-left: 5vw; height: 60px; justify-content: start"
+  >
+    <h3>Room tools</h3>
+    <button class="button-primary" style="height: 36px" (click)="leaveRoom()">
+      Leave room
+    </button>
+  </div>
 </div>
 
 <div class="main">
-  <div style="justify-content: center; display: flex">
-    <!-- <h2>Voting in {{  }}</h2> -->
-  </div>
-  <!-- cards  -->
-  <!-- style="display: flex; flex-direction: row; justify-content: space-around"
-> -->
-  <div class="card-row">
+  <!-- user card  -->
+  <div class="card-row" style="justify-content: center">
     <div
-      class="card card-shadow"
-      style="
-        width: 200px;
-        min-width: 200px;
-        align-items: start;
-        justify-content: start;
-      "
+      class="card card-shadow card-user"
+      style="width: 15vw; align-items: start; justify-content: start"
     >
       <div class="card-row">
         <h2>Users in room:</h2>
@@ -55,13 +60,13 @@
         <h3>User</h3>
         <h3>Vote</h3>
       </div>
-      <div class="card-row" *ngFor="let user of users$ | async">
-        <p>
-          {{ user.name }}
-        </p>
-        <p>
-          {{ user.point }}
-        </p>
+      <div style="height: 50vh; width: 90%; overflow-y: auto">
+        <div class="card-row" *ngFor="let user of users$ | async">
+          <p>
+            {{ user.name }}
+          </p>
+          {{ user.points }}
+        </div>
       </div>
       <div class="card-row">
         <h2>Votes:</h2>
@@ -73,35 +78,30 @@
     <div
       #votingCard
       class="card card-shadow"
-      style="align-items: center; width: auto"
+      style="align-items: center; width: 10vw; justify-content: space-evenly"
     >
       <h2>Cast Vote</h2>
       <p>Effort points</p>
-      <div *ngIf="isVoteCalled">
-        {{ result }}
-      </div>
-      <div
-        style="display: flexbox; flex-wrap: wrap"
-        *ngFor="let number of effortPoints"
-      >
-        <button
-          [class.button-primary]="number == userSelection"
-          [disabled]="isVoteEnded"
-          class="button"
-          style="width: 48px; margin: 4px"
-          (click)="castVote(number)"
-        >
-          {{ number }}
-        </button>
+      <div *ngFor="let number of effortPoints">
+        <div>
+          <button
+            [class.button]="number != userSelection"
+            [class.button-primary]="number === userSelection"
+            [disabled]="isVoteCalled"
+            (click)="castVote(number)"
+          >
+            {{ number }}
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- chart -->
-    <div class="card card-shadow" style="width: 500px">
+    <!-- [voteData]="voteData" -->
+    <div class="card card-shadow" style="width: 50vw; height: auto">
       <app-chart
         [effortPoints]="effortPoints"
         [voteDistribution]="voteDistribution"
-        [voteData]="voteData"
         [callVote]="changingValue"
         [result]="result"
         [isCountingDown]="isVoteCalled"

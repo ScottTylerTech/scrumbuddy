@@ -9,13 +9,11 @@ import { VoteComponent } from './vote/vote.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
-  { path: 'Home', redirectTo: 'home', pathMatch: 'full' },
   { path: 'rooms', component: RoomsComponent },
-  { path: 'Rooms', redirectTo: 'rooms', pathMatch: 'full' },
   { path: 'host', component: HostComponent },
   { path: 'vote', component: VoteComponent },
   { path: 'chart', component: ChartComponent },
-  // { path: '**', redirectTo: 'home', pathMatch: 'full' }
+  { path: '**', redirectTo: 'home', pathMatch: 'full' },
 ];
 
 @NgModule({
