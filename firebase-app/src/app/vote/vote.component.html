@@ -1,111 +1,113 @@
 <!-- vote card -->
-<div
-  class="card-row"
-  style="align-items: center; justify-content: center; margin: 80px 0 16px"
->
-  <!-- host tools  -->
-  <div class="card card-shadow" style="margin-right: 5vw">
-    <h3>Host tools</h3>
-    <div class="card-row">
-      <h3>Host:</h3>
-      <h3>{{ user.name }}</h3>
-    </div>
-    <div class="card-row">
-      <h3>Room:</h3>
-      <h3>{{ roomName }}</h3>
-    </div>
-    <div class="card-row">
-      <button
-        class="button-primary"
-        [disabled]="!amHost || isVoteCalled"
-        (click)="callVote()"
-      >
-        Call vote
-      </button>
-      <!-- [class.button-disabled]="!amHost || !isVoteEnded" -->
-      <button
-        class="button-primary"
-        [disabled]="!amHost || !isVoteCalled"
-        (click)="resetVote()"
-      >
-        Open vote
-      </button>
-    </div>
-  </div>
-
-  <!-- room tool -->
+<div class="content">
   <div
-    class="card card-shadow"
-    style="margin-left: 5vw; height: 60px; justify-content: start"
+    class="card-row"
+    style="align-items: center; justify-content: center; margin: 80px 0 16px"
   >
-    <h3>Room tools</h3>
-    <button class="button-primary" style="height: 36px" (click)="leaveRoom()">
-      Leave room
-    </button>
+    <!-- host tools  -->
+    <div class="card card-shadow host-tools">
+      <h3>Host tools</h3>
+      <div class="card-row">
+        <h3>Host:</h3>
+        <h3>{{ user.name }}</h3>
+      </div>
+      <div class="card-row">
+        <h3>Room:</h3>
+        <h3>{{ roomName }}</h3>
+      </div>
+      <div class="card-row">
+        <button
+          class="button-primary"
+          [disabled]="!amHost || isVoteCalled"
+          (click)="callVote()"
+        >
+          Call vote
+        </button>
+        <!-- [class.button-disabled]="!amHost || !isVoteEnded" -->
+        <button
+          class="button-primary"
+          [disabled]="!amHost || !isVoteCalled"
+          (click)="resetVote()"
+        >
+          Open vote
+        </button>
+      </div>
+    </div>
+
+    <!-- room tool -->
+    <div
+      class="card card-shadow room-tools"
+      style="margin-left: 5vw; width: 10vw; justify-content: start"
+    >
+      <h3 style="text-align: center">Room tools</h3>
+      <button class="button-primary" style="height: 36px" (click)="leaveRoom()">
+        Leave room
+      </button>
+    </div>
   </div>
-</div>
 
-<div class="main">
-  <!-- user card  -->
-  <div class="card-row" style="justify-content: center">
-    <div
-      class="card card-shadow card-user"
-      style="width: 15vw; align-items: start; justify-content: start"
-    >
+  <div class="vote-page">
+    <!-- user card  -->
+    <div class="vote-card-row">
       <div class="card-row">
-        <h2>Users in room:</h2>
-        <h2>{{ userCount }}</h2>
-      </div>
-      <div class="card-row">
-        <h3>User</h3>
-        <h3>Vote</h3>
-      </div>
-      <div style="height: 50vh; width: 90%; overflow-y: auto">
-        <div class="card-row" *ngFor="let user of users$ | async">
-          <p>
-            {{ user.name }}
-          </p>
-          {{ user.points }}
+        <div class="card">
+          <!-- user card  -->
+          <div class="card-row">
+            <h2>Users in room:</h2>
+            <h2>{{ userCount }}</h2>
+          </div>
+          <div class="card-row">
+            <h3>User</h3>
+            <h3>Vote</h3>
+          </div>
+          <div style="height: 50vh; width: 90%; overflow-y: auto">
+            <div class="card-row" *ngFor="let user of users$ | async">
+              <p>
+                {{ user.name }}
+              </p>
+              {{ user.points }}
+            </div>
+          </div>
+          <div class="card-row">
+            <h2>Votes:</h2>
+            <p>{{ voteCount }}</p>
+          </div>
+        </div>
+
+        <!-- effort point card -->
+        <div
+          #votingCard
+          class="card card-shadow effort-points"
+          style="align-items: center; justify-content: space-evenly"
+        >
+          <h2>Cast Vote</h2>
+          <p>Effort points</p>
+          <div *ngFor="let number of effortPoints">
+            <div>
+              <button
+                [class.button]="number != userSelection"
+                [class.button-primary]="number === userSelection"
+                [disabled]="isVoteCalled"
+                (click)="castVote(number)"
+              >
+                {{ number }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="card-row">
-        <h2>Votes:</h2>
-        <p>{{ voteCount }}</p>
-      </div>
     </div>
-
-    <!-- effort point card -->
-    <div
-      #votingCard
-      class="card card-shadow"
-      style="align-items: center; width: 10vw; justify-content: space-evenly"
-    >
-      <h2>Cast Vote</h2>
-      <p>Effort points</p>
-      <div *ngFor="let number of effortPoints">
-        <div>
-          <button
-            [class.button]="number != userSelection"
-            [class.button-primary]="number === userSelection"
-            [disabled]="isVoteCalled"
-            (click)="castVote(number)"
-          >
-            {{ number }}
-          </button>
-        </div>
-      </div>
-    </div>
-
     <!-- chart -->
     <!-- [voteData]="voteData" -->
-    <div class="card card-shadow" style="width: 50vw; height: auto">
-      <app-chart
-        [effortPoints]="effortPoints"
-        [voteDistribution]="voteDistribution"
-        [callVote]="changingValue"
-        [result]="result"
-        [isCountingDown]="isVoteCalled"
-      ></app-chart>
-    </div>
+    <!-- <div class="card card-shadow effort-points"> -->
+    <app-chart
+      [callVote]="changingValue"
+      [resetVote]="resetVoteSub"
+      [effortPoints]="effortPoints"
+      [voteDistribution]="voteDistribution"
+      [result]="result"
+      [isCountingDown]="isVoteCalled"
+    ></app-chart>
+    <!-- </div> -->
   </div>
 </div>

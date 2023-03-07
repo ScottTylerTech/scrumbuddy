@@ -41,9 +41,7 @@ export class RoomsComponent implements OnInit {
     private firebase: AngularFireDatabase,
     private router: Router,
     private route: ActivatedRoute
-  ) {
-    // get local storage
-  }
+  ) {}
 
   ngOnInit(): void {
     // this.router.events.subscribe((event: any) => {

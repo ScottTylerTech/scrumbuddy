@@ -1,4 +1,4 @@
-<div class="content" style="margin-top: 5%">
+<div class="content">
   <div>
     <h2>Room Selection</h2>
   </div>
@@ -28,6 +28,10 @@
         <div class="room-card-row">
           <span style="font-weight: 500">Date created: </span>
           <span>{{ getDate(room.createTime) | date }}</span>
+        </div>
+        <div class="room-card-row">
+          <span style="font-weight: 500">Users in room: </span>
+          <span>{{ room.users.length }}</span>
         </div>
         <div class="room-card-row" style="justify-content: end">
           <button

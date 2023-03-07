@@ -48,6 +48,7 @@ import { ChartComponent } from '../chart/chart.component';
 })
 export class VoteComponent implements OnInit {
   changingValue: Subject<IUser[]> = new Subject();
+  resetVoteSub: Subject<any> = new Subject();
   voteListen$: Observable<any>;
 
   roomRef: any;
@@ -131,6 +132,8 @@ export class VoteComponent implements OnInit {
     this.voteListen$.subscribe((val) => {
       if (val) {
         this.changingValue.next(this.users);
+      } else {
+        this.resetVoteSub.next({});
       }
     });
 
@@ -164,10 +167,6 @@ export class VoteComponent implements OnInit {
 
   public clickBtn() {
     console.log('click');
-  }
-
-  tellChild() {
-    this.changingValue.next(this.users);
   }
 
   ngOnInit(): void {

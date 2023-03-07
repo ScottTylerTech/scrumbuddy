@@ -1,55 +1,57 @@
-<div style="max-height: 25vh; display: flex; flex-direction: column">
-  <h1 style="text-align: center; margin: 8px 0; padding: 0">
-    Effort point distribution
-  </h1>
+<div class="card card-shadow result-card">
+  <div class="heading">
+    <h1>Effort point distribution</h1>
+  </div>
 
-  <canvas
-    baseChart
-    [data]="barChartData"
-    [labels]="effortPoints"
-    [type]="'bar'"
-  >
-  </canvas>
+  <div class="canvas">
+    <canvas
+      baseChart
+      [data]="barChartData"
+      [labels]="effortPoints"
+      [type]="'bar'"
+    >
+    </canvas>
+  </div>
 
-  <div style="display: flex; flex-direction: column; align-items: center">
+  <div class="result-info">
     <h2>Voting distribution</h2>
-    <div class="card-row" style="width: 75%">
+    <div class="card-row info">
       <h3>Total votes</h3>
       <div>{{ voterCount }}</div>
     </div>
-    <div class="card-row" style="width: 75%">
+    <div class="card-row info">
       <h3>Min vote</h3>
       <div>{{ minPoint }}</div>
     </div>
 
-    <div class="card-row" style="width: 75%">
+    <div class="card-row info">
       <div *ngFor="let v of minVoter" class="card-row">
         <div>{{ v.name }}, &nbsp;</div>
       </div>
     </div>
 
-    <div class="card-row" style="width: 75%">
+    <div class="card-row info">
       <h3>Mode vote</h3>
       <div>{{ mode }}</div>
     </div>
 
-    <div class="card-row" style="width: 75%">
+    <div class="card-row info">
       <h3>Max vote</h3>
       <div>{{ maxPoint }}</div>
     </div>
 
-    <div class="card-row" style="width: 75%">
+    <div class="card-row info">
       <div *ngFor="let v of maxVoter" class="card-row">
         <div>{{ v.name }}, &nbsp;</div>
       </div>
     </div>
 
-    <div class="card-row" style="width: 75%">
+    <div class="card-row info">
       <h3>Users not voted</h3>
       <div>{{ missedCount }}</div>
     </div>
 
-    <div class="card-row" style="width: 75%">
+    <div class="card-row info name">
       <div *ngFor="let v of missedUsers" class="card-row" style="width: auto">
         <div>{{ v.name }}, &nbsp;</div>
       </div>

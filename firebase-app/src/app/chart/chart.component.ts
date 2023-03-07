@@ -15,6 +15,7 @@ export class ChartComponent implements OnInit {
   @Input() voteDistribution: number[] = [];
   // @Input() voteData: IVote[] = [];
   @Input() callVote: Subject<IUser[]> = new Subject();
+  @Input() resetVote = new Subject();
   @Input() result: number;
   @Input() isCountingDown: boolean = false;
 
@@ -47,9 +48,7 @@ export class ChartComponent implements OnInit {
     this.effortPoints = ['1', '2', '3', '5', '8', '13', '21', '34', '55'];
   }
 
-  createChart(vD: number[]): void {
-    var mode = this.voteDistribution.sort();
-
+  createChart(): void {
     this.isCountingDown = false;
     this.barChartData = {
       labels: this.effortPoints,
@@ -60,9 +59,29 @@ export class ChartComponent implements OnInit {
   ngOnInit(): void {
     this.callVote.subscribe((v) => {
       this.showUserVotes(v);
-      this.createChart(this.voteDistribution);
+      this.createChart();
       console.log('value is changing', v);
     });
+
+    this.resetVote.subscribe((v) => {
+      this.resetChart();
+      this.createChart();
+    });
+  }
+
+  resetChart(): void {
+    this.missedCount = 0;
+    this.missedUsers = [];
+    this.voterCount = 0;
+    this.votedUsers = [];
+    this.minPoint = 0;
+    this.maxPoint = 0;
+    this.pointNum = 0;
+    this.minVoter = [];
+    this.maxVoter = [];
+    this.countArray = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    this.modeArray = [];
+    this.mode = 0;
   }
 
   private showUserVotes(voteData: IUser[]): void {

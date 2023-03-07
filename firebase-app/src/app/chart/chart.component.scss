@@ -1,7 +1,49 @@
 h1 {
   font-size: 48px;
+  text-align: center;
+  margin: 8px 0;
+  padding: 0;
 }
 
 h3 {
   margin: 2px 4px;
+}
+
+.result-card {
+  width: 50vw;
+  height: auto;
+}
+.heading {
+  height: auto;
+  width: 90%;
+}
+
+.canvas {
+  min-height: 300px;
+  height: auto;
+  width: 90%;
+}
+
+.result-info {
+  height: auto;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.info {
+  width: 75%;
+}
+
+.name {
+  justify-content: start;
+}
+
+@media (max-width: 800px) {
+  .result-card {
+    width: 90vw;
+    margin: auto;
+    margin-bottom: 5vh;
+  }
 }

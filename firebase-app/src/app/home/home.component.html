@@ -1,8 +1,9 @@
 <div class="content">
-  <div class="card card-shadow" style="width: 25vw; justify-content: center">
+  <div class="name-card card-shadow">
     <h2>Name</h2>
-    <div style="width: 50%">
+    <div>
       <input
+        style="display: flex; justify-content: center"
         type="text"
         placeholder="Enter your name"
         [(ngModel)]="user.name"
@@ -28,11 +29,3 @@
     </div>
   </div>
 </div>
-
-<!-- <div *ngIf="joinRoom">
-  <app-rooms [user]="user"></app-rooms>
-</div>
-
-<div *ngIf="hostRoom">
-  <app-host [user]="user"></app-host>
-</div> -->
