@@ -1,5 +1,5 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { IRoom } from '../entities/IRoom';
 import {
   AngularFireDatabase,
@@ -22,32 +22,10 @@ export class HostComponent implements OnInit {
     this.room.roomName = '';
     this.hasSession = localStorage.getItem('session');
     this.user = JSON.parse(localStorage.getItem('user') ?? '');
-
-    // verify session
-    // if (this.hasSession == null || this.user.name === '') {
-    //   console.log('No user, no session, redirect from host');
-    //   // no user, no session, redirect
-    //   this.router.navigateByUrl('/home');
-    // }
-
-    // set references to database
     this.roomDBRef = this.firebase.database.ref('rooms');
   }
 
-  ngOnInit(): void {
-    // this.router.events.subscribe((event: any) => {
-    //   if (
-    //     !this.hasSession &&
-    //     event instanceof NavigationEnd &&
-    //     event.url != '/host'
-    //   ) {
-    //     console.log('removing room and user from host');
-    //     this.removeUser(event);
-    //     // this.removeRoom(event);
-    //     localStorage.setItem('session', 'false');
-    //   }
-    // });
-  }
+  ngOnInit(): void {}
 
   public createRoom(): void {
     var newRoom = this.roomDBRef.push();
@@ -67,6 +45,7 @@ export class HostComponent implements OnInit {
     var roomUsersDBRef = this.firebase.database.ref(
       'rooms/' + this.room.key + '/users'
     );
+
     var newUser = roomUsersDBRef.push();
     this.user.key = newUser.key || '';
 
@@ -75,34 +54,8 @@ export class HostComponent implements OnInit {
       return;
     }
 
-    // newUser.set(this.user);
     window.localStorage.setItem('roomKey', this.room.key);
     window.localStorage.setItem('user', JSON.stringify(this.user));
     this.router.navigateByUrl('/vote');
-  }
-
-  private removeUser(event: any): void {
-    if (event.url == '/host') return;
-    // remove user from room
-    var userRef = this.firebase.database.ref(
-      'rooms/' + this.room.key + '/users/' + this.user.key
-    );
-    userRef.remove();
-  }
-
-  private removeRoom(event: any): void {
-    if (event.url == '/host') return;
-    // remove room from database
-    var userRef = this.firebase.database.ref('rooms/' + this.room.key);
-    // userRef.remove();
-  }
-
-  @HostListener('window:beforeunload')
-  windowBeforeUnload() {
-    // remove room if the user closes window
-    // do NOT remove if window close is due to starting vote
-    // localStorage.setItem('amHost', 'false');
-    // var roomRef = this.firebase.database.ref('rooms/' + this.room.key);
-    // roomRef.remove();
   }
 }

@@ -8,7 +8,6 @@
   </div>
   <div *ngIf="roomCount > 0">
     <div *ngFor="let room of rooms$ | async">
-      <!-- <div class="card"> -->
       <div
         class="card card-shadow"
         style="
@@ -31,7 +30,7 @@
         </div>
         <div class="room-card-row">
           <span style="font-weight: 500">Users in room: </span>
-          <span>{{ room.users.length }}</span>
+          <span>{{ getRomCount(room.users) }}</span>
         </div>
         <div class="room-card-row" style="justify-content: end">
           <button
@@ -43,6 +42,5 @@
         </div>
       </div>
     </div>
-    <!-- </div> -->
   </div>
 </div>

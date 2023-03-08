@@ -2,8 +2,16 @@
 <div class="content">
   <div
     class="card-row"
-    style="align-items: center; justify-content: center; margin: 80px 0 16px"
+    style="align-items: top; justify-content: center; margin: 80px 0 16px"
   >
+    <!-- room tool -->
+    <div class="card card-shadow room-tools">
+      <h3 style="text-align: center">Room tools</h3>
+      <button class="button-primary" style="height: 36px" (click)="leaveRoom()">
+        Leave room
+      </button>
+    </div>
+
     <!-- host tools  -->
     <div class="card card-shadow host-tools">
       <h3>Host tools</h3>
@@ -34,16 +42,22 @@
       </div>
     </div>
 
-    <!-- room tool -->
-    <div
-      class="card card-shadow room-tools"
-      style="margin-left: 5vw; width: 10vw; justify-content: start"
-    >
-      <h3 style="text-align: center">Room tools</h3>
-      <button class="button-primary" style="height: 36px" (click)="leaveRoom()">
-        Leave room
-      </button>
+    <div class="card card-shadow vote-result">
+      <h3>Voting results</h3>
+      <div
+        class="card-row"
+        style="
+          justify-content: space-between;
+          align-items: start;
+          font-size: 50px;
+        "
+      >
+        <h3>EP:</h3>
+        <h3>4</h3>
+      </div>
     </div>
+
+    <!-- end tool cards -->
   </div>
 
   <div class="vote-page">

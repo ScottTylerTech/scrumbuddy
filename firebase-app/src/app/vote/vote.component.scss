@@ -53,12 +53,22 @@ p {
 }
 
 .room-tools {
+  // justify-content: flex-start;
+  width: 10vw;
   min-width: 85px;
+  height: auto;
+  align-items: center;
+  // margin-left: 5vw;
+  // justify-content: start;
 }
 
 .effort-points {
   width: 10vw;
   height: auto;
+}
+
+.vote-result {
+  justify-content: start;
 }
 
 @media (max-width: 800px) {

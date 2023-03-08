@@ -97,9 +97,10 @@ export class VoteComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute
   ) {
+    this.hasSession = localStorage.getItem('session') === 'true';
+    if (!this.hasSession) {
+    }
     // get local storage values
-    this.hasSession = true;
-    localStorage.setItem('session', 'true');
     this.amHost = localStorage.getItem('amHost') === 'true';
     this.roomKey = localStorage.getItem('roomKey') || '';
     const userString = localStorage.getItem('user') || '';
@@ -142,11 +143,16 @@ export class VoteComponent implements OnInit {
       this.roomName = room.roomName;
       this.isVoteCalled = room.isVoting;
     });
-    // parse and create user
-    this.user = JSON.parse(userString) as IUser;
-    var newUser = this.usersDBRef.push();
-    this.user.key = newUser.key;
-    newUser.set(this.user);
+
+    // parse and create user if not already created
+    if (!this.hasSession) {
+      this.user = JSON.parse(userString) as IUser;
+      var newUser = this.usersDBRef.push();
+      this.user.key = newUser.key;
+      newUser.set(this.user);
+      this.hasSession = true;
+      localStorage.setItem('session', 'true');
+    }
 
     this.userDBRef = this.firebase.database.ref(
       'rooms/' + this.roomKey + '/users/' + this.user.key
@@ -169,22 +175,7 @@ export class VoteComponent implements OnInit {
     console.log('click');
   }
 
-  ngOnInit(): void {
-    // removes the user if navigating away from the vote page
-    // this.router.events.subscribe((event: any) => {
-    //   if (event.url === '/home') {
-    //     this.removeUser();
-    //     localStorage.setItem('session', '');
-    //   }
-    // } else if (!this.hasSession && event instanceof NavigationEnd) {
-    //   this.removeUser();
-    //   localStorage.setItem('session', 'false');
-    // } else if (this.hasSession && event instanceof NavigationStart) {
-    //   this.removeUser();
-    //   localStorage.setItem('session', 'false');
-    // }
-    // });
-  }
+  ngOnInit(): void {}
 
   public castVote(point: string): void {
     this.userSelection = point;
@@ -262,11 +253,6 @@ export class VoteComponent implements OnInit {
 
   @HostListener('window:beforeunload')
   windowBeforeUnload() {
-    // this.resetLocalStorage();
-    // this.router.navigateByUrl('/home');
-  }
-  @HostListener('window:refresh') windowRefresh() {
-    // this.resetLocalStorage();
-    // this.router.navigateByUrl('/home');
+    this.resetLocalStorage();
   }
 }
