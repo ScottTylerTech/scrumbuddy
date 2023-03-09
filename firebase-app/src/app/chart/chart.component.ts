@@ -1,9 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ChartConfiguration } from 'chart.js';
+import { ChartConfiguration, Color } from 'chart.js';
 import { IVote } from '../entities/IVote';
 import { BaseChartDirective } from 'ng2-charts';
 import { finalize, interval, Subject, takeUntil, timer } from 'rxjs';
 import { IUser } from '../entities/IUser';
+
+interface IResult {
+  ep: string;
+  count: number;
+  users: IUser[];
+}
 
 @Component({
   selector: 'app-chart',
@@ -24,8 +30,20 @@ export class ChartComponent implements OnInit {
 
   public barChartData: ChartConfiguration<'bar'>['data'];
 
-  public barChartOptions: ChartConfiguration<'bar'>['options'] = {
-    responsive: false,
+  public barChartOptions: any = {
+    scaleShowVerticalLines: false,
+    responsive: true,
+    scales: {
+      x: {},
+      y: {
+        weight: 2,
+        type: 'linear',
+        ticks: {
+          stepSize: 1,
+          beginAtZero: true,
+        },
+      },
+    },
   };
 
   public barChartLabels: String[] = this.effortPoints;
@@ -40,30 +58,66 @@ export class ChartComponent implements OnInit {
   minVoter: IUser[] = [];
   maxVoter: IUser[] = [];
   countArray: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-  modeArray: number[] = [];
+
+  modes: IResult[] = [];
+
+  modeArray: IUser[] = [];
   mode: number = 0;
 
+  voteCalled: boolean = false;
   constructor() {
     this.voteDistribution = [0, 2, 1, 3, 1, 0, 0, 0, 0, 0];
     this.effortPoints = ['1', '2', '3', '5', '8', '13', '21', '34', '55'];
+    this.mode = 0;
+    this.modes = [{ ep: '0', count: 0, users: [] }];
   }
 
   createChart(): void {
     this.isCountingDown = false;
     this.barChartData = {
       labels: this.effortPoints,
-      datasets: [{ data: this.countArray, label: 'Task 1' }],
+      datasets: [
+        {
+          label: 'Task',
+          data: this.countArray,
+          backgroundColor: [
+            'hsl(0, 1000%, 80%)',
+            'hsl(30, 100%, 80%)',
+            'hsl(60, 100%, 80%)',
+            'hsl(90, 100%, 80%)',
+            'hsl(120, 100%, 80%)',
+            'hsl(150, 100%, 80%)',
+            'hsl(180, 100%, 80%)',
+            'hsl(210, 100%, 80%)',
+            'hsl(240, 100%, 80%)',
+          ],
+          borderColor: [
+            'hsl(0, 1000%, 50%)',
+            'hsl(30, 100%, 50%)',
+            'hsl(60, 100%, 50%)',
+            'hsl(90, 100%, 50%)',
+            'hsl(120, 100%, 50%)',
+            'hsl(150, 100%, 50%)',
+            'hsl(180, 100%, 50%)',
+            'hsl(210, 100%, 50%)',
+            'hsl(240, 100%, 50%)',
+          ],
+          borderWidth: 2,
+        },
+      ],
     };
   }
 
   ngOnInit(): void {
     this.callVote.subscribe((v) => {
+      this.voteCalled = true;
       this.showUserVotes(v);
       this.createChart();
       console.log('value is changing', v);
     });
 
     this.resetVote.subscribe((v) => {
+      this.voteCalled = false;
       this.resetChart();
       this.createChart();
     });
@@ -82,6 +136,11 @@ export class ChartComponent implements OnInit {
     this.countArray = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     this.modeArray = [];
     this.mode = 0;
+    this.modes = [{ ep: '', count: 0, users: [] }];
+  }
+
+  getVoteResult(): number {
+    return this.mode;
   }
 
   private showUserVotes(voteData: IUser[]): void {
@@ -91,12 +150,41 @@ export class ChartComponent implements OnInit {
 
     this.createCountArray(this.votedUsers);
 
-    this.modeArray = this.countArray.filter(
-      (v) => v == Math.max(...this.countArray)
-    );
-    this.mode = this.modeArray[0];
-    this.minPoint = Math.min(...this.votedUsers.map((v) => v.points));
-    this.maxPoint = Math.max(...this.votedUsers.map((v) => v.points));
+    let r: IResult[] = [];
+    for (let i = 0; i < this.countArray.length; i++) {
+      var users = this.votedUsers.filter(
+        (user) => user.points == Number(this.effortPoints[i])
+      );
+      r.push({
+        ep: this.effortPoints[i],
+        count: this.countArray[i],
+        users: users,
+      });
+    }
+
+    // sort r by count descending order
+    r.sort((a, b) => b.count - a.count);
+    console.log('Sorted Results: ', r);
+
+    const topMode = r[0].count;
+    this.modes = r.filter((v) => v.count == topMode);
+    console.log('modes: ', this.modes);
+
+    this.modeArray = this.votedUsers.filter((v) => v.points == this.mode);
+
+    const modeIndex = this.countArray.indexOf(Math.max(...this.countArray));
+
+    this.mode =
+      this.votedUsers.length === 0 ? 0 : Number(this.effortPoints[modeIndex]);
+
+    this.minPoint =
+      this.votedUsers.length === 0
+        ? 0
+        : Math.min(...this.votedUsers.map((v) => v.points));
+    this.maxPoint =
+      this.votedUsers.length === 0
+        ? 0
+        : Math.max(...this.votedUsers.map((v) => v.points));
     this.pointNum = this.votedUsers.length;
     this.minVoter = this.votedUsers.filter((v) => v.points == this.minPoint);
     this.maxVoter = this.votedUsers.filter((v) => v.points == this.maxPoint);

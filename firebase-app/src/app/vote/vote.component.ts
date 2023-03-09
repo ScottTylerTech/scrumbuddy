@@ -1,45 +1,11 @@
-import {
-  Component,
-  ElementRef,
-  HostListener,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import {
-  AngularFireDatabase,
-  AngularFireList,
-} from '@angular/fire/compat/database';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-import {
-  ActivatedRoute,
-  Data,
-  NavigationEnd,
-  NavigationStart,
-  Router,
-} from '@angular/router';
-import {
-  catchError,
-  EMPTY,
-  finalize,
-  firstValueFrom,
-  interval,
-  lastValueFrom,
-  map,
-  Observable,
-  of,
-  Subject,
-  Subscription,
-  take,
-  takeUntil,
-  tap,
-  timer,
-  VirtualTimeScheduler,
-} from 'rxjs';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { Router } from '@angular/router';
+import { Observable, Subject } from 'rxjs';
 import { IUser } from '../entities/IUser';
 import { IRoom } from '../entities/IRoom';
 import { IVote } from '../entities/IVote';
 import { __param } from 'tslib';
-import { ChartComponent } from '../chart/chart.component';
 
 @Component({
   selector: 'app-vote',
@@ -56,7 +22,18 @@ export class VoteComponent implements OnInit {
   pointRef: any;
 
   //----
-  effortPoints: string[] = ['1', '2', '3', '5', '8', '13', '21', '34', '55'];
+  effortPoints: string[] = [
+    '0',
+    '1',
+    '2',
+    '3',
+    '5',
+    '8',
+    '13',
+    '21',
+    '34',
+    '55',
+  ];
 
   // local storage
   hasSession: boolean = false;
@@ -70,6 +47,7 @@ export class VoteComponent implements OnInit {
   // room
   room$: Observable<any>;
   roomName: string = '';
+  hostName: string = '';
   roomDBRef: any;
 
   // room users
@@ -83,42 +61,21 @@ export class VoteComponent implements OnInit {
   isVoteCalled: boolean = false;
   isVoteEnded: boolean = false;
   voteCount: number = 0;
-  voteDistribution: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+  voteDistribution: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   voteData: IVote[] = [];
-  // votes: any[] = [];
+  voteResult: number = 0;
   votes$: Observable<number[]>;
   missedVotes: IUser[] = [];
 
   // counter
   result: any;
 
-  constructor(
-    private firebase: AngularFireDatabase,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {
-    this.hasSession = localStorage.getItem('session') === 'true';
-    if (!this.hasSession) {
-    }
+  constructor(private firebase: AngularFireDatabase, private router: Router) {
     // get local storage values
+    this.hasSession = localStorage.getItem('session') === 'true';
     this.amHost = localStorage.getItem('amHost') === 'true';
     this.roomKey = localStorage.getItem('roomKey') || '';
     const userString = localStorage.getItem('user') || '';
-
-    // verify session
-    // if (!this.hasSession || userString === '' || this.roomKey === '') {
-    //   console.log(
-    //     'session: ' +
-    //       this.hasSession +
-    //       ' user: ' +
-    //       userString +
-    //       'roomKey:, ' +
-    //       this.roomKey +
-    //       'redirecting to home from vote'
-    //   );
-    //   this.resetLocalStorage();
-    //   this.router.navigateByUrl('/home');
-    // }
 
     // get room and user references
     this.usersDBRef = this.firebase.database.ref(
@@ -141,6 +98,7 @@ export class VoteComponent implements OnInit {
     this.room$.subscribe((room: IRoom) => {
       // this.isVoteCalled = room.isVoting;
       this.roomName = room.roomName;
+      this.hostName = room.host;
       this.isVoteCalled = room.isVoting;
     });
 
@@ -167,7 +125,6 @@ export class VoteComponent implements OnInit {
       var vc = users.filter((user) => user.points != 0);
       this.voteCount = vc.length;
       this.userCount = users.length;
-      // console.log('users: ', users);
     });
   }
 
@@ -193,29 +150,6 @@ export class VoteComponent implements OnInit {
     var updates: any = {};
     updates['rooms/' + this.roomKey + '/isVoting'] = this.isVoteCalled;
     this.firebase.database.ref().update(updates);
-
-    // await this.calculateResult();
-    // this.changingValue.next(this.users);
-
-    // for count down timer
-    // const date = new Date();
-    // date.setSeconds(date.getSeconds() + 3);
-    // const source = interval(1000);
-    // source
-    //   .pipe(
-    //     takeUntil(timer(5000)),
-    //     finalize(async () => {
-    //       this.isVoteCalled = false;
-    //       this.isVoteEnded = true;
-    //       var updates: any = {};
-    //       updates['rooms/' + this.roomKey + '/isVoting'] = this.isVoteEnded;
-    //       this.firebase.database.ref().update(updates);
-    //       console.log('vote ended:' + this.isVoteEnded);
-    //       await this.calculateResult();
-    //       this.changingValue.next(this.voteDistribution);
-    //     })
-    //   )
-    //   .subscribe((val) => (this.result = 3 - val));
   }
 
   public resetVote(): void {
@@ -234,11 +168,6 @@ export class VoteComponent implements OnInit {
     this.router.navigateByUrl('/home');
   }
 
-  private removeUser(): void {
-    var ref = this.firebase.database.ref('/rooms/' + this.roomKey);
-    ref.child('users/' + this.user.key).remove();
-  }
-
   private resetLocalStorage(): void {
     localStorage.setItem('session', '');
     localStorage.setItem('user', '');
@@ -247,12 +176,13 @@ export class VoteComponent implements OnInit {
     if (this.amHost) {
       this.firebase.database.ref('/rooms/' + this.roomKey).remove();
     } else {
-      this.removeUser();
+      var ref = this.firebase.database.ref('/rooms/' + this.roomKey);
+      ref.child('users/' + this.user.key).remove();
     }
   }
 
   @HostListener('window:beforeunload')
   windowBeforeUnload() {
-    this.resetLocalStorage();
+    // this.resetLocalStorage();
   }
 }

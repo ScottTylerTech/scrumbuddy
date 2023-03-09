@@ -13,13 +13,17 @@
     </div>
     <div class="button-row">
       <div>
-        <button class="button" [disabled]="user.name === ''" (click)="join()">
+        <button
+          class="button button-shadow"
+          [disabled]="user.name === ''"
+          (click)="join()"
+        >
           Join
         </button>
       </div>
       <div>
         <button
-          class="button-primary"
+          class="button-primary button-shadow"
           [disabled]="user.name === ''"
           (click)="host()"
         >
