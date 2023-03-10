@@ -8,7 +8,8 @@
     <div class="card card-shadow room-tools">
       <h3 style="text-align: center">Room tools</h3>
       <button class="button-primary" style="height: 36px" (click)="leaveRoom()">
-        Leave room
+        <span *ngIf="amHost">Close room</span>
+        <span *ngIf="!amHost">Leave room</span>
       </button>
     </div>
 
