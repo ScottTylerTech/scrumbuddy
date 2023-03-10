@@ -4,7 +4,10 @@
   },
   "hosting": {
     "site": "scrumbuddy",
-
-    "public": "firebase-app/dist/firebase-app"
+    "public": "firebase-app/dist/firebase-app",
+    "rewrites": [ {
+      "source": "**",
+      "destination": "/index.html"
+     } ]
   }
 }

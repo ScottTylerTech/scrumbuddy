@@ -47,8 +47,9 @@ export class VoteComponent implements OnInit {
 
   // room
   room$: Observable<any>;
-  roomName: string = '';
-  host: IUser = {} as IUser;
+  room: IRoom = {} as IRoom;
+  // roomName: string = '';
+  // host: IUser = {} as IUser;
   roomDBRef: any;
 
   // room users
@@ -85,6 +86,19 @@ export class VoteComponent implements OnInit {
 
     this.roomDBRef = this.firebase.database.ref('rooms/' + this.roomKey);
     this.room$ = this.firebase.object('rooms/' + this.roomKey).valueChanges();
+    this.room$.subscribe((room: IRoom) => {
+      // if room has 0 users close
+      if (room === null) {
+        this.leaveRoom();
+        return;
+      }
+      // this.isVoteCalled = room.isVoting;
+      this.room = room;
+      // this.roomName = room.roomName;
+      // this.host = room.host as IUser;
+      this.isVoteCalled = room.isVoting;
+    });
+
     this.voteListen$ = this.firebase
       .object('rooms/' + this.roomKey + '/isVoting')
       .valueChanges();
@@ -93,19 +107,8 @@ export class VoteComponent implements OnInit {
         this.changingValue.next(this.users);
       } else {
         this.resetVoteSub.next({});
+        this.userSelection = '';
       }
-    });
-
-    this.room$.subscribe((room: IRoom) => {
-      // if room has 0 users close
-      if (room === null) {
-        this.leaveRoom();
-        return;
-      }
-      // this.isVoteCalled = room.isVoting;
-      this.roomName = room.roomName;
-      this.host = room.host as IUser;
-      this.isVoteCalled = room.isVoting;
     });
 
     // parse and create user if not already created
@@ -117,9 +120,9 @@ export class VoteComponent implements OnInit {
       this.hasSession = true;
       localStorage.setItem('session', 'true');
       if (this.amHost) {
-        this.host = this.user;
+        this.room.host = this.user;
         var updates: any = {};
-        updates['rooms/' + this.roomKey + '/host/'] = this.host;
+        updates['rooms/' + this.roomKey + '/host/'] = this.room.host;
 
         this.firebase.database.ref().update(updates);
       }

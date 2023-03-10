@@ -25,9 +25,8 @@ export class ChartComponent implements OnInit {
   @Input() result: number;
   @Input() isCountingDown: boolean = false;
 
-  public barChartLegend = true;
+  public barChartLegend = false;
   public barChartPlugins = [];
-
   public barChartData: ChartConfiguration<'bar'>['data'];
 
   public barChartOptions: any = {
@@ -78,29 +77,31 @@ export class ChartComponent implements OnInit {
       labels: this.effortPoints,
       datasets: [
         {
-          label: 'Task',
+          // no top label
+
+          label: '',
           data: this.countArray,
           backgroundColor: [
-            'hsl(0, 1000%, 80%)',
+            'hsl(0, 100%, 80%)',
+            'hsl(15, 100%, 80%)',
             'hsl(30, 100%, 80%)',
-            'hsl(60, 100%, 80%)',
-            'hsl(90, 100%, 80%)',
-            'hsl(120, 100%, 80%)',
-            'hsl(150, 100%, 80%)',
-            'hsl(180, 100%, 80%)',
+            'hsl(45, 100%, 80%)',
             'hsl(210, 100%, 80%)',
-            'hsl(240, 100%, 80%)',
+            'hsl(225, 100%, 80%)',
+            'hsl(265, 100%, 80%)',
+            'hsl(300, 100%, 80%)',
+            'hsl(330, 100%, 80%)',
           ],
           borderColor: [
-            'hsl(0, 1000%, 50%)',
-            'hsl(30, 100%, 50%)',
-            'hsl(60, 100%, 50%)',
-            'hsl(90, 100%, 50%)',
-            'hsl(120, 100%, 50%)',
-            'hsl(150, 100%, 50%)',
-            'hsl(180, 100%, 50%)',
+            'hsl(0, 100%,   50%)',
+            'hsl(15, 100%,  50%)',
+            'hsl(30, 100%,  50%)',
+            'hsl(45, 100%,  50%)',
             'hsl(210, 100%, 50%)',
-            'hsl(240, 100%, 50%)',
+            'hsl(225, 100%, 50%)',
+            'hsl(265, 100%, 50%)',
+            'hsl(300, 100%, 50%)',
+            'hsl(330, 100%, 50%)',
           ],
           borderWidth: 2,
         },
