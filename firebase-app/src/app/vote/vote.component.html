@@ -17,7 +17,7 @@
       <h3>Host tools</h3>
       <div class="card-row">
         <h3>Host:</h3>
-        <h3>{{ hostName }}</h3>
+        <h3>{{ host.name }}</h3>
       </div>
       <div class="card-row">
         <h3>Room:</h3>
@@ -48,7 +48,7 @@
     <!-- user card  -->
     <div class="vote-card-row">
       <div class="card-row">
-        <div class="card card-shadow">
+        <div class="card card-shadow" style="justify-content: start">
           <!-- user card  -->
           <div class="card-row">
             <h2>Users in room:</h2>
@@ -58,16 +58,45 @@
             <h3>User</h3>
             <h3>Vote</h3>
           </div>
-          <div style="height: 50vh; width: 90%; overflow-y: auto">
+          <div style="max-height: 50vh; width: 90%; overflow-y: auto">
             <div class="card-row" *ngFor="let u of users" style="width: auto">
-              <span *ngIf=""></span>
+              <!-- user  -->
+              <div *ngIf="u.key === user.key">
+                <span *ngIf="!amHost">
+                  <h3 style="color: hsl(120, 100%, 30%)">{{ u.name }} (Me)</h3>
+                </span>
+                <span *ngIf="amHost">
+                  <h3 style="color: hsl(0, 100%, 50%)">
+                    {{ u.name }} (Me) (Host)
+                  </h3>
+                </span>
+              </div>
+              <!-- not user  -->
+              <div *ngIf="u.key != user.key">
+                <span *ngIf="u.key === host.key">
+                  <h3 style="color: hsl(0, 100%, 50%)">{{ u.name }} (Host)</h3>
+                </span>
+                <span *ngIf="u.key != host.key">
+                  <p>{{ u.name }}</p>
+                </span>
+              </div>
 
-              <span *ngIf="u.key === user.key">
+              <!-- host && user (green)
+              <span *ngIf="amHost && u.key === user.key">
+                <h3 style="color: hsl(120, 100%, 30%)">{{ u.name }} (Host)</h3>
+              </span>
+              host && !user (red)
+              <span *ngIf="u.key === host.key && !amHost">
+                <h3 style="color: hsl(0, 100%, 50%)">{{ u.name }} (Host)</h3>
+              </span>
+              !host && user (green)
+              <span *ngIf="u.key === user.key && !amHost">
                 <h3 style="color: hsl(120, 100%, 30%)">{{ u.name }} (Me)</h3>
               </span>
-              <span *ngIf="u.key != user.key">
+              !host && !user (black)
+              <span *ngIf="u.key != user.key && u.key === host.key">
                 <p>{{ u.name }}</p>
-              </span>
+              </span> -->
               <div *ngIf="u.points === 0">Not voted</div>
               <div *ngIf="u.points != 0">{{ u.points }}</div>
             </div>

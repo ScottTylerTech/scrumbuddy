@@ -6,6 +6,7 @@ import { IUser } from '../entities/IUser';
 import { IRoom } from '../entities/IRoom';
 import { IVote } from '../entities/IVote';
 import { __param } from 'tslib';
+import { ThisReceiver } from '@angular/compiler';
 
 @Component({
   selector: 'app-vote',
@@ -47,7 +48,7 @@ export class VoteComponent implements OnInit {
   // room
   room$: Observable<any>;
   roomName: string = '';
-  hostName: string = '';
+  host: IUser = {} as IUser;
   roomDBRef: any;
 
   // room users
@@ -96,9 +97,14 @@ export class VoteComponent implements OnInit {
     });
 
     this.room$.subscribe((room: IRoom) => {
+      // if room has 0 users close
+      if (room === null) {
+        this.leaveRoom();
+        return;
+      }
       // this.isVoteCalled = room.isVoting;
       this.roomName = room.roomName;
-      this.hostName = room.host;
+      this.host = room.host as IUser;
       this.isVoteCalled = room.isVoting;
     });
 
@@ -110,6 +116,13 @@ export class VoteComponent implements OnInit {
       newUser.set(this.user);
       this.hasSession = true;
       localStorage.setItem('session', 'true');
+      if (this.amHost) {
+        this.host = this.user;
+        var updates: any = {};
+        updates['rooms/' + this.roomKey + '/host/'] = this.host;
+
+        this.firebase.database.ref().update(updates);
+      }
     }
 
     this.userDBRef = this.firebase.database.ref(
@@ -183,6 +196,6 @@ export class VoteComponent implements OnInit {
 
   @HostListener('window:beforeunload')
   windowBeforeUnload() {
-    // this.resetLocalStorage();
+    this.resetLocalStorage();
   }
 }

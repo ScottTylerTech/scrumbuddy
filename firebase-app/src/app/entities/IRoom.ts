@@ -3,7 +3,7 @@ import { IUser } from './IUser';
 
 export interface IRoom {
   createTime: string;
-  host: string;
+  host: IUser;
   key: string;
   roomName: string;
   users: IUser[];

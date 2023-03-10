@@ -29,9 +29,14 @@ export class HostComponent implements OnInit {
 
   public createRoom(): void {
     var newRoom = this.roomDBRef.push();
+    // var roomUsersDBRef = this.firebase.database.ref(
+    //   'rooms/' + this.room.key + '/users'
+    // );
+    // var newUser = roomUsersDBRef.push();
+    // this.user.key = newUser.key || '';
 
     this.room.createTime = JSON.stringify(new Date());
-    this.room.host = this.user.name;
+    this.room.host = this.user;
     this.room.roomName = this.room.roomName;
     this.room.key = newRoom.key;
     this.room.users = [];
@@ -42,17 +47,10 @@ export class HostComponent implements OnInit {
 
     newRoom.set(this.room);
 
-    var roomUsersDBRef = this.firebase.database.ref(
-      'rooms/' + this.room.key + '/users'
-    );
-
-    var newUser = roomUsersDBRef.push();
-    this.user.key = newUser.key || '';
-
-    if (this.user.key === '') {
-      console.log('user key is empty');
-      return;
-    }
+    // if (this.user.key === '') {
+    //   console.log('user key is empty');
+    //   return;
+    // }
 
     window.localStorage.setItem('roomKey', this.room.key);
     window.localStorage.setItem('user', JSON.stringify(this.user));
