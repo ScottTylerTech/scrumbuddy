@@ -92,6 +92,8 @@
   <app-rooms
     *ngIf="state.loadState === LoadState.rooms"
     [user$]="user$"
+    (roomSelectEvent)="setRoom($event)"
+    (updateUserEvent)="setUser($event)"
   ></app-rooms>
   <app-host
     *ngIf="state.loadState === LoadState.host"
@@ -102,6 +104,6 @@
     *ngIf="state.loadState === LoadState.vote"
     [user$]="user$"
     [room$]="room$"
-    [state$]="state$"
+    (leaveRoomEvent)="updateState($event)"
   ></app-vote>
 </div>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { IRoom } from './entities/IRoom';
@@ -20,14 +21,13 @@ export class AppComponent implements OnInit {
   public LoadState = LoadState;
 
   amHost: boolean = false;
-  userSelected: boolean = false;
-  hasSession: boolean = false;
 
-  constructor() {}
+  constructor(private firebase: AngularFireDatabase) {}
 
   ngOnInit(): void {
     this.state$.next(LoadState.home);
     this.user$.subscribe((user) => {
+      this.user = user;
       this.amHost = user.amHost ?? false;
       console.log('user', { user });
     });
@@ -50,7 +50,16 @@ export class AppComponent implements OnInit {
 
   setRoom(room: IRoom): void {
     this.room$.next(room);
-    this.hasSession = true;
+
+    var usersDBRef = this.firebase.database.ref(
+      'rooms/' + room.uid + '/users/'
+    );
+    usersDBRef.child(this.user.uid).set(this.user);
+
     this.state$.next(LoadState.vote);
+  }
+
+  updateState(state: LoadState): void {
+    this.state$.next(state);
   }
 }

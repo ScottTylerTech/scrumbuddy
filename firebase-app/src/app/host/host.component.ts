@@ -6,21 +6,10 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { Router } from '@angular/router';
 import { IRoom } from '../entities/IRoom';
-import {
-  AngularFireDatabase,
-  PathReference,
-} from '@angular/fire/compat/database';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { IUser } from '../entities/IUser';
-import {
-  BehaviorSubject,
-  firstValueFrom,
-  Observable,
-  Subject,
-  take,
-  tap,
-} from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { uid } from 'uid';
 
@@ -47,6 +36,10 @@ export class HostComponent implements OnInit {
     });
   }
 
+  ngOndestroy(): void {
+    this.user$.unsubscribe();
+  }
+
   public createRoom(): void {
     this.user$.subscribe((user) => {
       this.user = user;
@@ -58,7 +51,7 @@ export class HostComponent implements OnInit {
       host: this.user,
       roomName: this.roomForm.value.roomName,
       uid: uid(),
-      users: [this.user],
+      users: [],
       isVoting: false,
     };
     dbRef.child(room.uid).set(room);
