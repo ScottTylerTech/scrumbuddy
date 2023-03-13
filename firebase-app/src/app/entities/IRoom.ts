@@ -4,7 +4,7 @@ import { IUser } from './IUser';
 export interface IRoom {
   createTime: string;
   host: IUser;
-  key: string;
+  uid: string;
   roomName: string;
   users: IUser[];
   isVoting: boolean;

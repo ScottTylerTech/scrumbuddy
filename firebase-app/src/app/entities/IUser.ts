@@ -1,5 +1,6 @@
 export interface IUser {
-  key: string;
+  uid: string;
   name: string;
   points: number;
+  amHost?: boolean;
 }
