@@ -1,6 +1,7 @@
 import {
   Component,
   ElementRef,
+  Input,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -10,8 +11,9 @@ import {
   AngularFireList,
 } from '@angular/fire/compat/database';
 import { NavigationStart, Router } from '@angular/router';
-import { map, Observable, tap } from 'rxjs';
+import { map, Observable, Subject, tap } from 'rxjs';
 import { IRoom } from '../entities/IRoom';
+import { IUser } from '../entities/IUser';
 
 @Component({
   selector: 'app-rooms',
@@ -19,8 +21,8 @@ import { IRoom } from '../entities/IRoom';
   styleUrls: ['./rooms.component.scss'],
 })
 export class RoomsComponent implements OnInit, OnDestroy {
-  @ViewChild('roomButtons') roomButtons: ElementRef;
-
+  @Input() user$: Subject<IUser> = new Subject();
+  user: IUser = {} as IUser;
   roomsRef$: AngularFireList<any>;
   roomCount: number = 0;
   hasSession: boolean;
@@ -40,10 +42,14 @@ export class RoomsComponent implements OnInit, OnDestroy {
     });
 
     // removes the user if navigating away from the vote page
-    this.router.events.subscribe((event: any) => {
-      if (event instanceof NavigationStart) {
-        console.log('NavigationEnd', this.router.navigated);
-      }
+    // this.router.events.subscribe((event: any) => {
+    //   if (event instanceof NavigationStart) {
+    //     console.log('NavigationEnd', this.router.navigated);
+    //   }
+    // });
+
+    this.user$.subscribe((user) => {
+      this.user = user;
     });
   }
 
@@ -54,6 +60,12 @@ export class RoomsComponent implements OnInit, OnDestroy {
   public joinRoom(room: string): void {
     localStorage.setItem('roomKey', room);
     this.router.navigateByUrl('/vote');
+  }
+
+  public host(): void {
+    // change amHost to true in user$
+    this.user.amHost = true;
+    this.user$.next(this.user);
   }
 
   public getDate(value: string): Date | null {

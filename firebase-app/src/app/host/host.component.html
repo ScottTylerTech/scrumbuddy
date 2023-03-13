@@ -1,28 +1,23 @@
 <div class="content">
   <div class="name-card card-shadow">
-    <div>
+    <form [formGroup]="roomForm">
       <h2>Create room</h2>
-    </div>
-
-    <div>
       <input
+        matInput
         style="display: flex; justify-content: center"
         type="text"
         placeholder="Enter room name"
-        [(ngModel)]="room.roomName"
-        name="name"
-        required
+        formControlName="roomName"
       />
-    </div>
-
-    <div class="button-row">
-      <button
-        class="button-primary"
-        [disabled]="room.roomName === ''"
-        (click)="createRoom()"
-      >
-        Create room
-      </button>
-    </div>
+      <div class="button-row">
+        <button
+          class="button-primary"
+          [disabled]="roomForm.invalid"
+          (click)="createRoom()"
+        >
+          Create room
+        </button>
+      </div>
+    </form>
   </div>
 </div>

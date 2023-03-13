@@ -84,6 +84,24 @@
   </a>
 </div>
 
-<div>
-  <router-outlet></router-outlet>
+<div *ngIf="{ loadState: state$ | async } as state">
+  <app-home
+    *ngIf="state.loadState === LoadState.home"
+    (userCreateEvent)="setUser($event)"
+  ></app-home>
+  <app-rooms
+    *ngIf="state.loadState === LoadState.rooms"
+    [user$]="user$"
+  ></app-rooms>
+  <app-host
+    *ngIf="state.loadState === LoadState.host"
+    [user$]="user$"
+    (roomCreateEvent)="setRoom($event)"
+  ></app-host>
+  <app-vote
+    *ngIf="state.loadState === LoadState.vote"
+    [user$]="user$"
+    [room$]="room$"
+    [state$]="state$"
+  ></app-vote>
 </div>

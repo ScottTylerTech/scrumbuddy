@@ -14,6 +14,8 @@ import { HostComponent } from './host/host.component';
 import { VoteComponent } from './vote/vote.component';
 import { ChartComponent } from './chart/chart.component';
 import { NgChartsModule } from 'ng2-charts';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
   declarations: [
@@ -32,8 +34,18 @@ import { NgChartsModule } from 'ng2-charts';
     AngularFireAuthModule,
     FormsModule,
     NgChartsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
   ],
-  exports: [FormsModule],
+  exports: [
+    FormsModule,
+    AppComponent,
+    HomeComponent,
+    RoomsComponent,
+    HostComponent,
+    VoteComponent,
+    ChartComponent,
+  ],
   providers: [AngularFireDatabase],
   bootstrap: [AppComponent],
 })

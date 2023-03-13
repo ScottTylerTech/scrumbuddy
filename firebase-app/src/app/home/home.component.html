@@ -1,35 +1,29 @@
 <div class="content">
   <div class="name-card card-shadow">
-    <h2>Name</h2>
-    <div>
+    <form [formGroup]="userForm">
+      <h2>Name</h2>
       <input
-        style="display: flex; justify-content: center"
-        type="text"
+        matInput
         placeholder="Enter your name"
-        [(ngModel)]="user.name"
-        name="name"
-        required
+        style="display: flex; justify-content: center"
+        formControlName="name"
       />
-    </div>
-    <div class="button-row">
-      <div>
+      <div class="button-row">
         <button
           class="button button-shadow"
-          [disabled]="user.name === ''"
-          (click)="join()"
+          [disabled]="userForm.invalid"
+          (click)="createUser(false)"
         >
           Join
         </button>
-      </div>
-      <div>
         <button
           class="button-primary button-shadow"
-          [disabled]="user.name === ''"
-          (click)="host()"
+          [disabled]="userForm.invalid"
+          (click)="createUser(true)"
         >
           Host
         </button>
       </div>
-    </div>
+    </form>
   </div>
 </div>

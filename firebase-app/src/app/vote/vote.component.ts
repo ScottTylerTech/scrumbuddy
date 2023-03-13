@@ -1,12 +1,19 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { IUser } from '../entities/IUser';
 import { IRoom } from '../entities/IRoom';
 import { IVote } from '../entities/IVote';
 import { __param } from 'tslib';
 import { ThisReceiver } from '@angular/compiler';
+import { LoadState } from '../entities/LoadState';
 
 @Component({
   selector: 'app-vote',
@@ -14,6 +21,9 @@ import { ThisReceiver } from '@angular/compiler';
   styleUrls: ['./vote.component.scss'],
 })
 export class VoteComponent implements OnInit {
+  @Input() room$: Subject<IRoom>;
+  @Input() state$: BehaviorSubject<LoadState>;
+
   changingValue: Subject<IUser[]> = new Subject();
   resetVoteSub: Subject<any> = new Subject();
   voteListen$: Observable<any>;
@@ -43,10 +53,11 @@ export class VoteComponent implements OnInit {
 
   // user
   userDBRef: any;
+  @Input() user$: Subject<IUser> = new Subject();
   user: IUser = {} as IUser;
 
   // room
-  room$: Observable<any>;
+  // room$: Observable<any>;
   room: IRoom = {} as IRoom;
   // roomName: string = '';
   // host: IUser = {} as IUser;
@@ -73,64 +84,77 @@ export class VoteComponent implements OnInit {
   result: any;
 
   constructor(private firebase: AngularFireDatabase, private router: Router) {
-    // get local storage values
-    this.hasSession = localStorage.getItem('session') === 'true';
-    this.amHost = localStorage.getItem('amHost') === 'true';
-    this.roomKey = localStorage.getItem('roomKey') || '';
-    const userString = localStorage.getItem('user') || '';
+    // // get local storage values
+    // this.hasSession = localStorage.getItem('session') === 'true';
+    // this.amHost = localStorage.getItem('amHost') === 'true';
+    // this.roomKey = localStorage.getItem('roomKey') || '';
+    // const userString = localStorage.getItem('user') || '';
+    // // get room and user references
+    // this.usersDBRef = this.firebase.database.ref(
+    //   'rooms/' + this.roomKey + '/users/'
+    // );
+    // this.roomDBRef = this.firebase.database.ref('rooms/' + this.roomKey);
+    // // this.room$ = this.firebase.object('rooms/' + this.roomKey).valueChanges();
+    // this.room$.subscribe((room: IRoom) => {
+    //   // if room has 0 users close
+    //   if (room === null) {
+    //     this.leaveRoom();
+    //     return;
+    //   }
+    //   // this.isVoteCalled = room.isVoting;
+    //   this.room = room;
+    //   // this.roomName = room.roomName;
+    //   // this.host = room.host as IUser;
+    //   this.isVoteCalled = room.isVoting;
+    // });
+    // this.voteListen$ = this.firebase
+    //   .object('rooms/' + this.roomKey + '/isVoting')
+    //   .valueChanges();
+    // this.voteListen$.subscribe((val) => {
+    //   if (val) {
+    //     this.changingValue.next(this.users);
+    //   } else {
+    //     this.resetVoteSub.next({});
+    //     this.userSelection = '';
+    //   }
+    // });
+    // // parse and create user if not already created
+    // if (!this.hasSession) {
+    //   this.user = JSON.parse(userString) as IUser;
+    //   var newUser = this.usersDBRef.push();
+    //   this.user.key = newUser.key;
+    //   newUser.set(this.user);
+    //   this.hasSession = true;
+    //   localStorage.setItem('session', 'true');
+    //   if (this.amHost) {
+    //     this.room.host = this.user;
+    //     var updates: any = {};
+    //     updates['rooms/' + this.roomKey + '/host/'] = this.room.host;
+    //     this.firebase.database.ref().update(updates);
+    //   }
+    // }
+    // this.userDBRef = this.firebase.database.ref(
+    //   'rooms/' + this.roomKey + '/users/' + this.user.key
+    // );
+    // this.users$ = this.firebase
+    //   .list('rooms/' + this.roomKey + '/users')
+    //   .valueChanges();
+    // this.users$.subscribe((users: IUser[]) => {
+    //   this.users = users as IUser[];
+    //   var vc = users.filter((user) => user.points != 0);
+    //   this.voteCount = vc.length;
+    //   this.userCount = users.length;
+    // });
+  }
 
-    // get room and user references
-    this.usersDBRef = this.firebase.database.ref(
-      'rooms/' + this.roomKey + '/users/'
-    );
+  ngOnInit(): void {
+    this.user$.subscribe((user) => {
+      this.user = user;
+    });
 
-    this.roomDBRef = this.firebase.database.ref('rooms/' + this.roomKey);
-    this.room$ = this.firebase.object('rooms/' + this.roomKey).valueChanges();
-    this.room$.subscribe((room: IRoom) => {
-      // if room has 0 users close
-      if (room === null) {
-        this.leaveRoom();
-        return;
-      }
-      // this.isVoteCalled = room.isVoting;
+    this.room$.subscribe((room) => {
       this.room = room;
-      // this.roomName = room.roomName;
-      // this.host = room.host as IUser;
-      this.isVoteCalled = room.isVoting;
     });
-
-    this.voteListen$ = this.firebase
-      .object('rooms/' + this.roomKey + '/isVoting')
-      .valueChanges();
-    this.voteListen$.subscribe((val) => {
-      if (val) {
-        this.changingValue.next(this.users);
-      } else {
-        this.resetVoteSub.next({});
-        this.userSelection = '';
-      }
-    });
-
-    // parse and create user if not already created
-    if (!this.hasSession) {
-      this.user = JSON.parse(userString) as IUser;
-      var newUser = this.usersDBRef.push();
-      this.user.key = newUser.key;
-      newUser.set(this.user);
-      this.hasSession = true;
-      localStorage.setItem('session', 'true');
-      if (this.amHost) {
-        this.room.host = this.user;
-        var updates: any = {};
-        updates['rooms/' + this.roomKey + '/host/'] = this.room.host;
-
-        this.firebase.database.ref().update(updates);
-      }
-    }
-
-    this.userDBRef = this.firebase.database.ref(
-      'rooms/' + this.roomKey + '/users/' + this.user.key
-    );
 
     this.users$ = this.firebase
       .list('rooms/' + this.roomKey + '/users')
@@ -144,17 +168,11 @@ export class VoteComponent implements OnInit {
     });
   }
 
-  public clickBtn() {
-    console.log('click');
-  }
-
-  ngOnInit(): void {}
-
   public castVote(point: string): void {
     this.userSelection = point;
     console.log('selected button: ', point);
     var updates: any = {};
-    updates['rooms/' + this.roomKey + '/users/' + this.user.key + '/points'] =
+    updates['rooms/' + this.roomKey + '/users/' + this.user.uid + '/points'] =
       Number(point);
 
     this.firebase.database.ref().update(updates);
@@ -172,7 +190,7 @@ export class VoteComponent implements OnInit {
     this.isVoteCalled = false;
     var updates: any = {};
     this.users.forEach((user) => {
-      updates['rooms/' + this.roomKey + '/users/' + user.key + '/points'] = 0;
+      updates['rooms/' + this.roomKey + '/users/' + user.uid + '/points'] = 0;
     });
     updates['rooms/' + this.roomKey + '/isVoting'] = this.isVoteCalled;
     this.firebase.database.ref().update(updates);
@@ -181,20 +199,21 @@ export class VoteComponent implements OnInit {
 
   public leaveRoom(): void {
     this.resetLocalStorage();
-    this.router.navigateByUrl('/home');
+    this.state$.next(LoadState.home);
   }
 
   private resetLocalStorage(): void {
-    localStorage.setItem('session', '');
-    localStorage.setItem('user', '');
-    localStorage.setItem('amHost', '');
-    localStorage.setItem('roomKey', '');
+    // remove room if host
     if (this.amHost) {
       this.firebase.database.ref('/rooms/' + this.roomKey).remove();
     } else {
+      // remove user from room
       var ref = this.firebase.database.ref('/rooms/' + this.roomKey);
-      ref.child('users/' + this.user.key).remove();
+      ref.child('users/' + this.user.uid).remove();
     }
+
+    // remove user from auth list
+    this.firebase.database.ref('/users/' + this.user.uid).remove();
   }
 
   @HostListener('window:beforeunload')

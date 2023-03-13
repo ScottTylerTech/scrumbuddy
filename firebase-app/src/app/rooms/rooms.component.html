@@ -4,7 +4,7 @@
   </div>
   <div *ngIf="roomCount === 0">
     <p>There are no rooms.</p>
-    <button [routerLink]="['/host']">Click to host</button>
+    <button (click)="host()">Click to host</button>
   </div>
   <div *ngIf="roomCount > 0">
     <div *ngFor="let room of rooms$ | async">
@@ -35,7 +35,7 @@
         <div class="room-card-row" style="justify-content: end">
           <button
             class="button-primary button-shadow"
-            (click)="joinRoom(room.key)"
+            (click)="joinRoom(room.uid)"
           >
             Join
           </button>

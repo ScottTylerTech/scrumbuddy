@@ -1,4 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Injectable,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { IRoom } from '../entities/IRoom';
 import {
@@ -6,54 +13,56 @@ import {
   PathReference,
 } from '@angular/fire/compat/database';
 import { IUser } from '../entities/IUser';
+import {
+  BehaviorSubject,
+  firstValueFrom,
+  Observable,
+  Subject,
+  take,
+  tap,
+} from 'rxjs';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { uid } from 'uid';
 
 @Component({
   selector: 'app-host',
   templateUrl: './host.component.html',
 })
+@Injectable()
 export class HostComponent implements OnInit {
-  user: IUser;
-  room: IRoom = {} as IRoom;
-  roomDBRef: any;
-  hasSession: any;
+  roomForm: FormGroup;
 
-  constructor(private router: Router, private firebase: AngularFireDatabase) {
-    // get from local storage
-    this.room.roomName = '';
-    this.hasSession = localStorage.getItem('session');
-    this.user = JSON.parse(localStorage.getItem('user') ?? '');
-    this.roomDBRef = this.firebase.database.ref('rooms');
+  @Input() user$: BehaviorSubject<IUser> = new BehaviorSubject({} as IUser);
+  user: IUser = {} as IUser;
+  @Output() roomCreateEvent: EventEmitter<IRoom> = new EventEmitter<IRoom>();
+
+  constructor(
+    private firebase: AngularFireDatabase,
+    private formBuilder: FormBuilder
+  ) {}
+
+  ngOnInit(): void {
+    this.roomForm = this.formBuilder.group({
+      roomName: ['', [Validators.required, Validators.minLength(3)]],
+    });
   }
 
-  ngOnInit(): void {}
-
   public createRoom(): void {
-    var newRoom = this.roomDBRef.push();
-    // var roomUsersDBRef = this.firebase.database.ref(
-    //   'rooms/' + this.room.key + '/users'
-    // );
-    // var newUser = roomUsersDBRef.push();
-    // this.user.key = newUser.key || '';
+    this.user$.subscribe((user) => {
+      this.user = user;
+    });
 
-    this.room.createTime = JSON.stringify(new Date());
-    this.room.host = this.user;
-    this.room.roomName = this.room.roomName;
-    this.room.key = newRoom.key;
-    this.room.users = [];
-    this.room.isVoting = false;
-
-    localStorage.setItem('roomKey', this.room.key);
-    localStorage.setItem('amHost', 'true');
-
-    newRoom.set(this.room);
-
-    // if (this.user.key === '') {
-    //   console.log('user key is empty');
-    //   return;
-    // }
-
-    window.localStorage.setItem('roomKey', this.room.key);
-    window.localStorage.setItem('user', JSON.stringify(this.user));
-    this.router.navigateByUrl('/vote');
+    var dbRef = this.firebase.database.ref('rooms');
+    let room: IRoom = {
+      createTime: JSON.stringify(new Date()),
+      host: this.user,
+      roomName: this.roomForm.value.roomName,
+      uid: uid(),
+      users: [this.user],
+      isVoting: false,
+    };
+    dbRef.child(room.uid).set(room);
+    this.roomCreateEvent.emit(room);
+    console.log('host room: ', room);
   }
 }
