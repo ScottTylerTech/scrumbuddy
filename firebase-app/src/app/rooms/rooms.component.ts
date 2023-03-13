@@ -1,59 +1,59 @@
 import {
   Component,
-  ElementRef,
+  EventEmitter,
+  Input,
   OnDestroy,
   OnInit,
-  ViewChild,
+  Output,
 } from '@angular/core';
-import {
-  AngularFireDatabase,
-  AngularFireList,
-} from '@angular/fire/compat/database';
-import { NavigationStart, Router } from '@angular/router';
-import { map, Observable, tap } from 'rxjs';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { Observable, Subject } from 'rxjs';
 import { IRoom } from '../entities/IRoom';
+import { IUser } from '../entities/IUser';
 
 @Component({
   selector: 'app-rooms',
   templateUrl: './rooms.component.html',
   styleUrls: ['./rooms.component.scss'],
 })
-export class RoomsComponent implements OnInit, OnDestroy {
-  @ViewChild('roomButtons') roomButtons: ElementRef;
-
-  roomsRef$: AngularFireList<any>;
-  roomCount: number = 0;
-  hasSession: boolean;
-  roomDBRef: any;
-  roomKey: string = '';
+export class RoomsComponent implements OnInit {
+  @Input() user$: Subject<IUser> = new Subject();
+  @Output() roomSelectEvent: EventEmitter<IRoom> = new EventEmitter<IRoom>();
+  @Output() updateUserEvent: EventEmitter<IUser> = new EventEmitter<IUser>();
   rooms$: Observable<IRoom[]>;
-  rooms: IRoom[] = [];
+  user: IUser = {} as IUser;
+  roomCount: number = 0;
 
-  constructor(private firebase: AngularFireDatabase, private router: Router) {}
+  constructor(private firebase: AngularFireDatabase) {}
 
   ngOnInit(): void {
-    this.roomsRef$ = this.firebase.list('rooms');
-    this.rooms$ = this.roomsRef$.valueChanges();
+    let roomsRef: any = this.firebase.list('rooms');
+    this.rooms$ = roomsRef.valueChanges();
     this.rooms$.subscribe((res) => {
       this.roomCount = res.length;
-      console.log('Rooms', { res });
+      // console.log('Rooms', { res });
     });
 
-    // removes the user if navigating away from the vote page
-    this.router.events.subscribe((event: any) => {
-      if (event instanceof NavigationStart) {
-        console.log('NavigationEnd', this.router.navigated);
-      }
+    this.user$.subscribe((user) => {
+      this.user = user;
     });
   }
 
-  ngOnDestroy(): void {
-    console.log('ngOnDestroy');
+  public joinRoom(roomUID: string): void {
+    let selectedRoom: IRoom = {} as IRoom;
+    this.firebase.database.ref('rooms/' + roomUID).once('value', (room) => {
+      selectedRoom = room.val();
+    });
+
+    var ref = this.firebase.database.ref('rooms/' + roomUID + '/users');
+    ref.child(this.user.uid).set(this.user);
+    // console.log('selectedRoom', { selectedRoom });
+    this.roomSelectEvent.emit(selectedRoom);
   }
 
-  public joinRoom(room: string): void {
-    localStorage.setItem('roomKey', room);
-    this.router.navigateByUrl('/vote');
+  public host(): void {
+    this.user.amHost = true;
+    this.updateUserEvent.emit(this.user);
   }
 
   public getDate(value: string): Date | null {

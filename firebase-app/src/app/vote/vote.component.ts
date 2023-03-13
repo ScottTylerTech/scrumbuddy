@@ -1,12 +1,24 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+import {
+  BehaviorSubject,
+  finalize,
+  interval,
+  Observable,
+  Subject,
+  take,
+} from 'rxjs';
 import { IUser } from '../entities/IUser';
 import { IRoom } from '../entities/IRoom';
-import { IVote } from '../entities/IVote';
 import { __param } from 'tslib';
-import { ThisReceiver } from '@angular/compiler';
+import { LoadState } from '../entities/LoadState';
 
 @Component({
   selector: 'app-vote',
@@ -14,15 +26,12 @@ import { ThisReceiver } from '@angular/compiler';
   styleUrls: ['./vote.component.scss'],
 })
 export class VoteComponent implements OnInit {
-  changingValue: Subject<IUser[]> = new Subject();
+  @Output() leaveRoomEvent: EventEmitter<LoadState> =
+    new EventEmitter<LoadState>();
+
+  changingValue: BehaviorSubject<IUser[]> = new BehaviorSubject([] as IUser[]);
   resetVoteSub: Subject<any> = new Subject();
   voteListen$: Observable<any>;
-
-  roomRef: any;
-  roomValueChanges$: Observable<any>;
-  pointRef: any;
-
-  //----
   effortPoints: string[] = [
     '0',
     '1',
@@ -36,24 +45,19 @@ export class VoteComponent implements OnInit {
     '55',
   ];
 
-  // local storage
-  hasSession: boolean = false;
   amHost: boolean = false;
-  roomKey: string;
-
+  countDown: boolean = false;
+  countdown: number = 0;
   // user
-  userDBRef: any;
+  @Input() user$: BehaviorSubject<IUser> = new BehaviorSubject({} as IUser);
   user: IUser = {} as IUser;
 
   // room
-  room$: Observable<any>;
+  @Input() room$: BehaviorSubject<IRoom> = new BehaviorSubject({} as IRoom);
+  roomValueChanges$: Observable<any>;
   room: IRoom = {} as IRoom;
-  // roomName: string = '';
-  // host: IUser = {} as IUser;
-  roomDBRef: any;
 
   // room users
-  usersDBRef: any;
   users$: Observable<any>;
   users: IUser[] = [];
   userCount: number = 0;
@@ -61,46 +65,48 @@ export class VoteComponent implements OnInit {
 
   // votes
   isVoteCalled: boolean = false;
-  isVoteEnded: boolean = false;
   voteCount: number = 0;
   voteDistribution: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  voteData: IVote[] = [];
-  voteResult: number = 0;
-  votes$: Observable<number[]>;
-  missedVotes: IUser[] = [];
 
-  // counter
-  result: any;
+  constructor(private firebase: AngularFireDatabase) {}
 
-  constructor(private firebase: AngularFireDatabase, private router: Router) {
-    // get local storage values
-    this.hasSession = localStorage.getItem('session') === 'true';
-    this.amHost = localStorage.getItem('amHost') === 'true';
-    this.roomKey = localStorage.getItem('roomKey') || '';
-    const userString = localStorage.getItem('user') || '';
+  ngOnInit(): void {
+    this.user$.subscribe((user) => {
+      // console.log('user: ', user);
+      this.user = user;
+    });
 
-    // get room and user references
-    this.usersDBRef = this.firebase.database.ref(
-      'rooms/' + this.roomKey + '/users/'
-    );
+    this.room$.subscribe((room) => {
+      // console.log('room: ', room);
+      this.room = room;
+    });
 
-    this.roomDBRef = this.firebase.database.ref('rooms/' + this.roomKey);
-    this.room$ = this.firebase.object('rooms/' + this.roomKey).valueChanges();
-    this.room$.subscribe((room: IRoom) => {
-      // if room has 0 users close
+    this.roomValueChanges$ = this.firebase
+      .object('rooms/' + this.room.uid)
+      .valueChanges();
+    this.roomValueChanges$.subscribe((room) => {
+      // console.log('room changes: ', room);
       if (room === null) {
         this.leaveRoom();
         return;
       }
-      // this.isVoteCalled = room.isVoting;
-      this.room = room;
-      // this.roomName = room.roomName;
-      // this.host = room.host as IUser;
       this.isVoteCalled = room.isVoting;
     });
 
+    this.users$ = this.firebase
+      .list('rooms/' + this.room.uid + '/users')
+      .valueChanges();
+
+    this.users$.subscribe((users: IUser[]) => {
+      this.users = users as IUser[];
+      var vc = users.filter((user) => user.points != 0);
+      this.voteCount = vc.length;
+      this.userCount = users.length;
+    });
+    this.amHost = this.user.uid === this.room.host.uid;
+
     this.voteListen$ = this.firebase
-      .object('rooms/' + this.roomKey + '/isVoting')
+      .object('rooms/' + this.room.uid + '/isVoting')
       .valueChanges();
     this.voteListen$.subscribe((val) => {
       if (val) {
@@ -110,51 +116,13 @@ export class VoteComponent implements OnInit {
         this.userSelection = '';
       }
     });
-
-    // parse and create user if not already created
-    if (!this.hasSession) {
-      this.user = JSON.parse(userString) as IUser;
-      var newUser = this.usersDBRef.push();
-      this.user.key = newUser.key;
-      newUser.set(this.user);
-      this.hasSession = true;
-      localStorage.setItem('session', 'true');
-      if (this.amHost) {
-        this.room.host = this.user;
-        var updates: any = {};
-        updates['rooms/' + this.roomKey + '/host/'] = this.room.host;
-
-        this.firebase.database.ref().update(updates);
-      }
-    }
-
-    this.userDBRef = this.firebase.database.ref(
-      'rooms/' + this.roomKey + '/users/' + this.user.key
-    );
-
-    this.users$ = this.firebase
-      .list('rooms/' + this.roomKey + '/users')
-      .valueChanges();
-
-    this.users$.subscribe((users: IUser[]) => {
-      this.users = users as IUser[];
-      var vc = users.filter((user) => user.points != 0);
-      this.voteCount = vc.length;
-      this.userCount = users.length;
-    });
   }
-
-  public clickBtn() {
-    console.log('click');
-  }
-
-  ngOnInit(): void {}
 
   public castVote(point: string): void {
     this.userSelection = point;
-    console.log('selected button: ', point);
+    // console.log('selected button: ', point);
     var updates: any = {};
-    updates['rooms/' + this.roomKey + '/users/' + this.user.key + '/points'] =
+    updates['rooms/' + this.room.uid + '/users/' + this.user.uid + '/points'] =
       Number(point);
 
     this.firebase.database.ref().update(updates);
@@ -162,43 +130,58 @@ export class VoteComponent implements OnInit {
 
   public callVote(): void {
     if (!this.amHost) return;
-    this.isVoteCalled = true;
-    var updates: any = {};
-    updates['rooms/' + this.roomKey + '/isVoting'] = this.isVoteCalled;
-    this.firebase.database.ref().update(updates);
+
+    this.countDown = true;
+    this.countdown = 3;
+    const countdown$ = interval(1000).pipe(
+      take(this.countdown),
+      finalize(() => {
+        this.isVoteCalled = true;
+        this.countDown = false;
+        var updates: any = {};
+        updates['rooms/' + this.room.uid + '/isVoting'] = this.isVoteCalled;
+        this.firebase.database.ref().update(updates);
+        this.countdown = 3;
+      })
+    );
+
+    countdown$.subscribe(() => {
+      this.countdown--;
+    });
   }
 
   public resetVote(): void {
     this.isVoteCalled = false;
     var updates: any = {};
     this.users.forEach((user) => {
-      updates['rooms/' + this.roomKey + '/users/' + user.key + '/points'] = 0;
+      updates['rooms/' + this.room.uid + '/users/' + user.uid + '/points'] = 0;
     });
-    updates['rooms/' + this.roomKey + '/isVoting'] = this.isVoteCalled;
+    updates['rooms/' + this.room.uid + '/isVoting'] = this.isVoteCalled;
     this.firebase.database.ref().update(updates);
     this.userSelection = '';
   }
 
   public leaveRoom(): void {
     this.resetLocalStorage();
-    this.router.navigateByUrl('/home');
+    this.leaveRoomEvent.emit(LoadState.home);
   }
 
   private resetLocalStorage(): void {
-    localStorage.setItem('session', '');
-    localStorage.setItem('user', '');
-    localStorage.setItem('amHost', '');
-    localStorage.setItem('roomKey', '');
+    // remove room if host
     if (this.amHost) {
-      this.firebase.database.ref('/rooms/' + this.roomKey).remove();
+      this.firebase.database.ref('/rooms/' + this.room.uid).remove();
     } else {
-      var ref = this.firebase.database.ref('/rooms/' + this.roomKey);
-      ref.child('users/' + this.user.key).remove();
+      // remove user from room
+      var ref = this.firebase.database.ref('/rooms/' + this.room.uid);
+      ref.child('users/' + this.user.uid).remove();
     }
+
+    // remove user from auth list
+    this.firebase.database.ref('/users/' + this.user.uid).remove();
   }
 
   @HostListener('window:beforeunload')
   windowBeforeUnload() {
-    this.resetLocalStorage();
+    this.leaveRoom();
   }
 }

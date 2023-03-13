@@ -12,6 +12,11 @@
   href="https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap"
   rel="stylesheet"
 />
+
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+/>
 <div class="toolbar" role="banner">
   <span
     style="
@@ -22,7 +27,13 @@
     "
     ><img width="50" alt="Logo" src="../assets/logo.png"
   /></span>
-
+  <span
+    class="material-symbols-outlined"
+    style="cursor: pointer"
+    (click)="updateState(LoadState.home)"
+  >
+    home
+  </span>
   <!-- <span style="font-family: 'Pacifico', cursive;">Welcome</span> -->
   <div
     style="
@@ -84,6 +95,26 @@
   </a>
 </div>
 
-<div>
-  <router-outlet></router-outlet>
+<div *ngIf="{ loadState: state$ | async } as state">
+  <app-home
+    *ngIf="state.loadState === LoadState.home"
+    (userCreateEvent)="setUser($event)"
+  ></app-home>
+  <app-rooms
+    *ngIf="state.loadState === LoadState.rooms"
+    [user$]="user$"
+    (roomSelectEvent)="setRoom($event)"
+    (updateUserEvent)="setUser($event)"
+  ></app-rooms>
+  <app-host
+    *ngIf="state.loadState === LoadState.host"
+    [user$]="user$"
+    (roomCreateEvent)="setRoom($event)"
+  ></app-host>
+  <app-vote
+    *ngIf="state.loadState === LoadState.vote"
+    [user$]="user$"
+    [room$]="room$"
+    (leaveRoomEvent)="updateState($event)"
+  ></app-vote>
 </div>
