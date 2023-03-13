@@ -17,15 +17,21 @@
   </div>
 
   <div class="canvas">
-    <canvas
-      baseChart
-      [legend]="barChartLegend"
-      [data]="barChartData"
-      [labels]="effortPoints"
-      [type]="'bar'"
-      [options]="barChartOptions"
-    >
-    </canvas>
+    <div *ngIf="voteIsCalled">
+      <h1>{{ counter }}</h1>
+    </div>
+
+    <div *ngIf="!voteIsCalled">
+      <canvas
+        baseChart
+        [legend]="barChartLegend"
+        [data]="barChartData"
+        [labels]="effortPoints"
+        [type]="'bar'"
+        [options]="barChartOptions"
+      >
+      </canvas>
+    </div>
   </div>
 
   <div class="result-info">

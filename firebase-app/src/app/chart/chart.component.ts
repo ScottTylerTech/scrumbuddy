@@ -1,8 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ChartConfiguration, Color } from 'chart.js';
-import { IVote } from '../entities/IVote';
-import { BaseChartDirective } from 'ng2-charts';
-import { finalize, interval, Subject, takeUntil, timer } from 'rxjs';
+import { Subject } from 'rxjs';
 import { IUser } from '../entities/IUser';
 
 interface IResult {
@@ -19,11 +17,10 @@ interface IResult {
 export class ChartComponent implements OnInit {
   @Input() effortPoints: string[] = [];
   @Input() voteDistribution: number[] = [];
-  // @Input() voteData: IVote[] = [];
+  @Input() counter: number = 0;
   @Input() callVote: Subject<IUser[]> = new Subject();
   @Input() resetVote = new Subject();
-  @Input() result: number;
-  @Input() isCountingDown: boolean = false;
+  @Input() voteIsCalled: boolean = false;
 
   public barChartLegend = false;
   public barChartPlugins = [];
@@ -72,7 +69,6 @@ export class ChartComponent implements OnInit {
   }
 
   createChart(): void {
-    this.isCountingDown = false;
     this.barChartData = {
       labels: this.effortPoints,
       datasets: [
@@ -114,7 +110,6 @@ export class ChartComponent implements OnInit {
       this.voteCalled = true;
       this.showUserVotes(v);
       this.createChart();
-      console.log('value is changing', v);
     });
 
     this.resetVote.subscribe((v) => {
@@ -165,11 +160,11 @@ export class ChartComponent implements OnInit {
 
     // sort r by count descending order
     r.sort((a, b) => b.count - a.count);
-    console.log('Sorted Results: ', r);
+    // console.log('Sorted Results: ', r);
 
     const topMode = r[0].count;
     this.modes = r.filter((v) => v.count == topMode);
-    console.log('modes: ', this.modes);
+    // console.log('modes: ', this.modes);
 
     this.modeArray = this.votedUsers.filter((v) => v.points == this.mode);
 
