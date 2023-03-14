@@ -16,7 +16,7 @@ interface IResult {
 })
 export class ChartComponent implements OnInit {
   @Input() effortPoints: string[] = [];
-  @Input() voteDistribution: number[] = [];
+  voteDistribution: number[] = [];
   @Input() counter: number = 0;
   @Input() callVote: Subject<IUser[]> = new Subject();
   @Input() resetVote = new Subject();
@@ -34,8 +34,6 @@ export class ChartComponent implements OnInit {
         yAlign: 'center',
         callbacks: {
           label: (c: any) => {
-            let label = c.dataset.label || '';
-
             let labelUsers = this.votedUsers
               .filter((u) => u.points === Number(c.label))
               .map((u) => {

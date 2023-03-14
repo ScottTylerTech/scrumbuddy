@@ -68,18 +68,15 @@ export class VoteComponent implements OnInit {
   // votes
   isVoteCalled: boolean = false;
   voteCount: number = 0;
-  voteDistribution: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   constructor(private firebase: AngularFireDatabase) {}
 
   ngOnInit(): void {
     this.user$.subscribe((user) => {
-      // console.log('user: ', user);
       this.user = user;
     });
 
     this.room$.subscribe((room) => {
-      // console.log('room: ', room);
       this.room = room;
     });
 
@@ -87,7 +84,6 @@ export class VoteComponent implements OnInit {
       .object('rooms/' + this.room.uid)
       .valueChanges();
     this.roomValueChanges$.subscribe((room) => {
-      // console.log('room changes: ', room);
       if (room === null) {
         this.leaveRoom();
         return;
