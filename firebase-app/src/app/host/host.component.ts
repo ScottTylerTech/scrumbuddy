@@ -52,6 +52,5 @@ export class HostComponent implements OnInit {
     };
     dbRef.child(room.uid).set(room);
     this.roomCreateEvent.emit(room);
-    // console.log('host room: ', room);
   }
 }

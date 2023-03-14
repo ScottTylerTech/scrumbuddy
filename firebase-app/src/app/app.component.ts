@@ -23,11 +23,10 @@ export class AppComponent implements OnInit {
   constructor(private firebase: AngularFireDatabase) {}
 
   ngOnInit(): void {
-    this.state$.next(LoadState.vote);
+    this.state$.next(LoadState.home);
     this.user$.subscribe((user) => {
       this.user = user;
       this.amHost = user.amHost ?? false;
-      // console.log('user', { user });
     });
   }
   setUser(user: IUser): void {
