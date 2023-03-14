@@ -46,6 +46,8 @@ export class VoteComponent implements OnInit {
   ];
 
   amHost: boolean = false;
+  showVotesToggle: boolean = false;
+  showNumbersToggle: boolean = false;
   countDown: boolean = false;
   countdown: number = 0;
   // user
@@ -162,8 +164,27 @@ export class VoteComponent implements OnInit {
   }
 
   public leaveRoom(): void {
+    if (this.amHost) {
+      if (this.userCount > 1) {
+        if (
+          !confirm(
+            'Are you sure you want to leave the room?\n' +
+              'Users in the room will be kicked out.'
+          )
+        )
+          return;
+      }
+    }
     this.resetLocalStorage();
     this.leaveRoomEvent.emit(LoadState.home);
+  }
+
+  public showVotes(): void {
+    this.showVotesToggle = !this.showVotesToggle;
+  }
+
+  public showNumbers(): void {
+    this.showNumbersToggle = !this.showNumbersToggle;
   }
 
   private resetLocalStorage(): void {

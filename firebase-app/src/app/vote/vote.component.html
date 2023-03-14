@@ -7,7 +7,19 @@
     <!-- room tool -->
     <div class="card card-shadow room-tools">
       <h3 style="text-align: center">Room tools</h3>
-      <button class="button-primary" style="height: 36px" (click)="leaveRoom()">
+      <button
+        class="button-primary"
+        style="margin: 0 4px"
+        [disabled]="!amHost"
+        (click)="showVotes()"
+      >
+        Toggle votes
+      </button>
+      <label>
+        <input [disabled]="!amHost" type="checkbox" (change)="showNumbers()" />
+        Show numbers
+      </label>
+      <button class="button-warn" (click)="leaveRoom()">
         <span *ngIf="room.host.uid === user.uid">Close room</span>
         <span *ngIf="room.host.uid != user.uid">Leave room</span>
       </button>
@@ -15,7 +27,7 @@
 
     <!-- host tools  -->
     <div class="card card-shadow host-tools">
-      <h3>Host tools</h3>
+      <h3>Vote tools</h3>
       <div class="card-row">
         <h3>Host:</h3>
         <h3>{{ room.host.name }}</h3>
@@ -81,8 +93,20 @@
                   <p>{{ u.name }}</p>
                 </span>
               </div>
-              <!-- <div *ngIf="u.points === 0">Not voted</div> -->
-              <!-- <div *ngIf="u.points != 0">voted</div> -->
+              <div
+                style="display: flex; align-items: center"
+                *ngIf="showVotesToggle"
+              >
+                <div *ngIf="u.points === 0">
+                  <p>Not voted</p>
+                </div>
+                <div *ngIf="u.points != 0 && showNumbersToggle">
+                  <p>{{ u.points }}</p>
+                </div>
+                <div *ngIf="u.points != 0 && !showNumbersToggle">
+                  <p>voted</p>
+                </div>
+              </div>
             </div>
           </div>
           <div class="card-row">
@@ -111,10 +135,6 @@
         </div>
       </div>
     </div>
-    <!-- chart -->
-    <!-- [voteData]="voteData" -->
-    <!-- <div class="card card-shadow effort-points"> -->
-    <!-- [effortPoints]="effortPoints" -->
 
     <div>
       <app-chart

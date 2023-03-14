@@ -8,10 +8,6 @@
         <h3>EP:</h3>
         <h3 *ngIf="modes.length === 1">{{ modes.at(0)?.ep }}</h3>
         <h3 *ngIf="modes.length > 1">Tie</h3>
-        <!-- <div style="margin: 2px 4px">
-          <div *ngIf="modes.length === 1">{{ modes.at(0)?.ep }}</div>
-          <div *ngIf="modes.length > 1">Tie</div>
-        </div> -->
       </div>
     </div>
   </div>
@@ -46,14 +42,11 @@
     </div>
 
     <div class="card-row info name">
-      <div *ngFor="let v of minVoter" class="card-row name">
-        <div>{{ v.name }}, &nbsp;</div>
-      </div>
+      {{ minVoterLabel }}
     </div>
 
     <div class="card-row info">
       <h3>Mode vote</h3>
-      <!-- multiple modes  -->
       <div *ngIf="modes.length > 1">Tie</div>
 
       <div *ngIf="modes.length === 1">
@@ -65,12 +58,8 @@
     <div class="card-row info name">
       <div *ngIf="modes.length > 1">Tie</div>
 
-      <div *ngIf="modes.length === 0">
-        <div *ngFor="let user of modes.at(0)?.users">
-          <div>
-            {{ user.name }}
-          </div>
-        </div>
+      <div *ngIf="modes.length === 1">
+        {{ modeVoterLabel }}
       </div>
     </div>
 
@@ -80,8 +69,8 @@
     </div>
 
     <div class="card-row info name">
-      <div *ngFor="let v of maxVoter" class="card-row name">
-        <div>{{ v.name }}, &nbsp;</div>
+      <div>
+        {{ maxVoterLabel }}
       </div>
     </div>
 

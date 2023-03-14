@@ -27,6 +27,25 @@ export class ChartComponent implements OnInit {
   public barChartData: ChartConfiguration<'bar'>['data'];
 
   public barChartOptions: any = {
+    plugins: {
+      tooltip: {
+        enabled: true,
+        displayColors: false,
+        yAlign: 'center',
+        callbacks: {
+          label: (c: any) => {
+            let label = c.dataset.label || '';
+
+            let labelUsers = this.votedUsers
+              .filter((u) => u.points === Number(c.label))
+              .map((u) => {
+                return u.name;
+              });
+            return labelUsers.join(', ');
+          },
+        },
+      },
+    },
     scaleShowVerticalLines: false,
     responsive: true,
     scales: {
@@ -51,8 +70,9 @@ export class ChartComponent implements OnInit {
   minPoint: number = 0;
   maxPoint: number = 0;
   pointNum: number = 0;
-  minVoter: IUser[] = [];
-  maxVoter: IUser[] = [];
+  minVoterLabel: string = '';
+  modeVoterLabel: string = '';
+  maxVoterLabel: string = '';
   countArray: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   modes: IResult[] = [];
@@ -127,12 +147,13 @@ export class ChartComponent implements OnInit {
     this.minPoint = 0;
     this.maxPoint = 0;
     this.pointNum = 0;
-    this.minVoter = [];
-    this.maxVoter = [];
     this.countArray = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     this.modeArray = [];
     this.mode = 0;
     this.modes = [{ ep: '', count: 0, users: [] }];
+    this.minVoterLabel = '';
+    this.modeVoterLabel = '';
+    this.maxVoterLabel = '';
   }
 
   getVoteResult(): number {
@@ -141,6 +162,7 @@ export class ChartComponent implements OnInit {
 
   private showUserVotes(voteData: IUser[]): void {
     this.votedUsers = voteData.filter((v) => v.points != 0);
+    this.voterCount = this.votedUsers.length;
     this.missedUsers = voteData.filter((v) => v.points == 0);
     this.missedCount = this.missedUsers.length;
 
@@ -157,14 +179,14 @@ export class ChartComponent implements OnInit {
         users: users,
       });
     }
-
-    // sort r by count descending order
     r.sort((a, b) => b.count - a.count);
-    // console.log('Sorted Results: ', r);
 
     const topMode = r[0].count;
-    this.modes = r.filter((v) => v.count == topMode);
-    // console.log('modes: ', this.modes);
+    this.modes = r.filter((result) => result.count == topMode);
+    this.modeVoterLabel = r
+      .filter((result) => result.count == topMode)
+      .map((filterResult) => filterResult.users.map((user) => user.name))
+      .join(', ');
 
     this.modeArray = this.votedUsers.filter((v) => v.points == this.mode);
 
@@ -182,8 +204,18 @@ export class ChartComponent implements OnInit {
         ? 0
         : Math.max(...this.votedUsers.map((v) => v.points));
     this.pointNum = this.votedUsers.length;
-    this.minVoter = this.votedUsers.filter((v) => v.points == this.minPoint);
-    this.maxVoter = this.votedUsers.filter((v) => v.points == this.maxPoint);
+    this.minVoterLabel = this.votedUsers
+      .filter((v) => v.points == this.minPoint)
+      .map((v) => {
+        return v.name;
+      })
+      .join(', ');
+    this.maxVoterLabel = this.votedUsers
+      .filter((v) => v.points == this.maxPoint)
+      .map((v) => {
+        return v.name;
+      })
+      .join(', ');
   }
 
   private createCountArray(users: IUser[]): void {

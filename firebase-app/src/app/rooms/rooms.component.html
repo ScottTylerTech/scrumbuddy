@@ -1,6 +1,6 @@
 <div class="content">
   <div>
-    <h2>Room Selection</h2>
+    <h1>Room Selection</h1>
   </div>
   <div *ngIf="roomCount === 0">
     <p>There are no rooms.</p>
@@ -17,20 +17,20 @@
         "
       >
         <div class="room-card-row">
-          <span style="font-weight: 500">Room name: </span>
-          <span style="justify-content: flex-end">{{ room.roomName }}</span>
+          <h2>Room name:</h2>
+          <h2>{{ room.roomName }}</h2>
         </div>
         <div class="room-card-row">
-          <span style="font-weight: 500">Room host: </span>
-          <span>{{ room.host.name }}</span>
+          <h3>Room host:</h3>
+          <h3>{{ room.host.name }}</h3>
         </div>
         <div class="room-card-row">
-          <span style="font-weight: 500">Date created: </span>
-          <span>{{ getDate(room.createTime) | date }}</span>
+          <h3>Date created:</h3>
+          <h3>{{ getDate(room.createTime) | date }}</h3>
         </div>
         <div class="room-card-row">
-          <span style="font-weight: 500">Users in room: </span>
-          <span>{{ getRomCount(room.users) }}</span>
+          <h3>Users in room:</h3>
+          <h3>{{ getRomCount(room.users) }}</h3>
         </div>
         <div class="room-card-row" style="justify-content: end">
           <button

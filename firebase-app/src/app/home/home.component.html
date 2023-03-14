@@ -1,29 +1,27 @@
 <div class="content">
-  <div class="name-card card-shadow">
-    <form [formGroup]="userForm">
-      <h2>Name</h2>
-      <input
-        matInput
-        placeholder="Enter your name"
-        style="display: flex; justify-content: center"
-        formControlName="name"
-      />
-      <div class="button-row">
-        <button
-          class="button button-shadow"
-          [disabled]="userForm.invalid"
-          (click)="createUser(false)"
-        >
-          Join
-        </button>
-        <button
-          class="button-primary button-shadow"
-          [disabled]="userForm.invalid"
-          (click)="createUser(true)"
-        >
-          Host
-        </button>
-      </div>
-    </form>
-  </div>
+  <form [formGroup]="userForm" class="card card-shadow">
+    <h1>Name</h1>
+    <input
+      matInput
+      placeholder="Enter your name"
+      style="display: flex; justify-content: center"
+      formControlName="name"
+    />
+    <div class="button-row">
+      <button
+        class="button button-shadow"
+        [disabled]="userForm.invalid"
+        (click)="createUser(false)"
+      >
+        Join
+      </button>
+      <button
+        class="button-primary button-shadow"
+        [disabled]="userForm.invalid"
+        (click)="createUser(true)"
+      >
+        Host
+      </button>
+    </div>
+  </form>
 </div>

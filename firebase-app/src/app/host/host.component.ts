@@ -32,7 +32,7 @@ export class HostComponent implements OnInit {
 
   ngOnInit(): void {
     this.roomForm = this.formBuilder.group({
-      roomName: ['', [Validators.required, Validators.minLength(3)]],
+      roomName: ['', [Validators.required, Validators.minLength(1)]],
     });
   }
 

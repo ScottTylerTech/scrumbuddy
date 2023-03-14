@@ -1,23 +1,20 @@
 <div class="content">
-  <div class="name-card card-shadow">
-    <form [formGroup]="roomForm">
-      <h2>Create room</h2>
-      <input
-        matInput
-        style="display: flex; justify-content: center"
-        type="text"
-        placeholder="Enter room name"
-        formControlName="roomName"
-      />
-      <div class="button-row">
-        <button
-          class="button-primary"
-          [disabled]="roomForm.invalid"
-          (click)="createRoom()"
-        >
-          Create room
-        </button>
-      </div>
-    </form>
-  </div>
+  <form [formGroup]="roomForm" class="card card-shadow">
+    <h1>Create room</h1>
+    <input
+      matInput
+      type="text"
+      placeholder="Enter room name"
+      formControlName="roomName"
+    />
+    <div class="button-row">
+      <button
+        class="button-primary"
+        [disabled]="roomForm.invalid"
+        (click)="createRoom()"
+      >
+        Create room
+      </button>
+    </div>
+  </form>
 </div>

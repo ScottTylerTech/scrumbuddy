@@ -9,10 +9,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.spacer {
-  flex: 1;
-}
-
 .toolbar {
   position: absolute;
   top: 0;
@@ -20,27 +16,28 @@
   right: 0;
   height: 60px;
   display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   background-color: #1976d2;
-  color: white;
-  font-weight: 600;
 }
 
-.toolbar img {
-  margin: 0 16px;
+.logo {
+  margin-left: 12px;
+}
+.icon {
+  margin-right: 12px;
 }
 
-.toolbar #twitter-logo {
-  height: 40px;
-  margin: 0 8px;
-}
-
-.toolbar #youtube-logo {
-  height: 40px;
-  margin: 0 16px;
-}
-
-.toolbar #twitter-logo:hover,
-.toolbar #youtube-logo:hover {
-  opacity: 0.8;
+.title {
+  margin-left: 12px;
+  flex: 1;
+  font-family: "Lilita One", cursive;
+  font-size: 40px;
+  color: hsl(0, 0%, 98%);
+  width: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
