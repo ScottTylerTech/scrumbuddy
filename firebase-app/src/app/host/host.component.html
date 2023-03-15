@@ -16,5 +16,33 @@
         Create room
       </button>
     </div>
+
+    <div style="width: 90%">
+      <div class="menu-header">
+        <button
+          style="background-color: var(--card-primary)"
+          (click)="expandMenu(!isOptionMenuClosed)"
+        >
+          <span *ngIf="isOptionMenuClosed" class="material-symbols-outlined">
+            keyboard_arrow_down
+          </span>
+          <span *ngIf="!isOptionMenuClosed" class="material-symbols-outlined">
+            expand_less
+          </span>
+        </button>
+        <span class="menu-header last-child"> Room Options </span>
+      </div>
+      <div
+        [class.hidden]="!isOptionMenuClosed"
+        [class.menu-content]="isOptionMenuClosed"
+      >
+        <input
+          matInput
+          type="text"
+          placeholder="Set count down time"
+          formControlName="countDownTime"
+        />
+      </div>
+    </div>
   </form>
 </div>

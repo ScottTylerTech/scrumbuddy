@@ -122,6 +122,7 @@
           <div *ngFor="let number of effortPoints">
             <div>
               <button
+                style="margin: 2px 4px"
                 [class.button]="number != userSelection"
                 [class.button-primary]="number === userSelection"
                 [disabled]="isVoteCalled"
@@ -141,7 +142,8 @@
         [callVote]="changingValue"
         [resetVote]="resetVoteSub"
         [voteIsCalled]="countDown"
-        [counter]="countdown"
+        [counter]="voteCountDownNumber"
+        [countDownStart$]="countDownStart$"
       ></app-chart>
     </div>
     <!-- </div> -->

@@ -8,4 +8,5 @@ export interface IRoom {
   roomName: string;
   users: IUser[];
   isVoting: boolean;
+  countDown: number;
 }

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ChartConfiguration, Color } from 'chart.js';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { IUser } from '../entities/IUser';
 
 interface IResult {
@@ -20,6 +20,9 @@ export class ChartComponent implements OnInit {
   @Input() counter: number = 0;
   @Input() callVote: Subject<IUser[]> = new Subject();
   @Input() resetVote = new Subject();
+  @Input() countDownStart$: BehaviorSubject<boolean> = new BehaviorSubject(
+    false
+  );
   @Input() voteIsCalled: boolean = false;
 
   public barChartLegend = false;
@@ -134,6 +137,10 @@ export class ChartComponent implements OnInit {
       this.voteCalled = false;
       this.resetChart();
       this.createChart();
+    });
+
+    this.countDownStart$.subscribe((v) => {
+      console.log('countDownStart$: ', v, ' v: ', this.counter);
     });
   }
 

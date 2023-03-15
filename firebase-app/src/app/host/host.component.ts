@@ -20,7 +20,7 @@ import { uid } from 'uid';
 @Injectable()
 export class HostComponent implements OnInit {
   roomForm: FormGroup;
-
+  isOptionMenuClosed: boolean = false;
   @Input() user$: BehaviorSubject<IUser> = new BehaviorSubject({} as IUser);
   user: IUser = {} as IUser;
   @Output() roomCreateEvent: EventEmitter<IRoom> = new EventEmitter<IRoom>();
@@ -33,6 +33,7 @@ export class HostComponent implements OnInit {
   ngOnInit(): void {
     this.roomForm = this.formBuilder.group({
       roomName: ['', [Validators.required, Validators.minLength(1)]],
+      countDownTime: ['', [Validators.minLength(1)]],
     });
   }
 
@@ -49,8 +50,14 @@ export class HostComponent implements OnInit {
       uid: uid(),
       users: [],
       isVoting: false,
+      countDown: this.roomForm.value.countDownTime ?? 3,
     };
     dbRef.child(room.uid).set(room);
     this.roomCreateEvent.emit(room);
+  }
+
+  public expandMenu(isClosed: boolean): void {
+    this.isOptionMenuClosed = isClosed;
+    console.log(this.isOptionMenuClosed);
   }
 }

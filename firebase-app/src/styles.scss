@@ -221,6 +221,33 @@ p {
   flex: 1;
 }
 
+.hidden {
+  display: none;
+}
+
+.menu-header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border: 2px solid var(--card-border-primary);
+  &:last-child {
+    margin: auto;
+    align-items: center;
+    font-weight: 700;
+    border: 0;
+    justify-content: center;
+  }
+}
+
+.menu-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  border: 2px solid var(--card-border-primary);
+  width: 100%;
+}
+
 @media (max-width: 800px) {
   .content {
     flex-direction: column;

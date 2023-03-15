@@ -50,6 +50,7 @@ export class VoteComponent implements OnInit {
   showNumbersToggle: boolean = false;
   countDown: boolean = false;
   countdown: number = 0;
+  voteCountDownNumber: number = 0;
   // user
   @Input() user$: BehaviorSubject<IUser> = new BehaviorSubject({} as IUser);
   user: IUser = {} as IUser;
@@ -67,6 +68,7 @@ export class VoteComponent implements OnInit {
 
   // votes
   isVoteCalled: boolean = false;
+  countDownStart$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   voteCount: number = 0;
 
   constructor(private firebase: AngularFireDatabase) {}
@@ -76,6 +78,7 @@ export class VoteComponent implements OnInit {
       this.user = user;
     });
 
+    // room
     this.room$.subscribe((room) => {
       this.room = room;
     });
@@ -84,17 +87,25 @@ export class VoteComponent implements OnInit {
       .object('rooms/' + this.room.uid)
       .valueChanges();
     this.roomValueChanges$.subscribe((room) => {
+      // leave room if empty
       if (room === null) {
         this.leaveRoom();
         return;
       }
+      this.voteCountDownNumber = room.countDown;
+      // console.log('room.countDown: ', room.countDown);
+      this.countDownStart$.next(
+        this.voteCountDownNumber !== this.room.countDown
+      );
+      // console.log('this.countDownStart$: ', this.countDownStart$.value);
       this.isVoteCalled = room.isVoting;
+      // console.log('room.isVoting: ', room.isVoting);
     });
 
+    // room.users
     this.users$ = this.firebase
       .list('rooms/' + this.room.uid + '/users')
       .valueChanges();
-
     this.users$.subscribe((users: IUser[]) => {
       this.users = users as IUser[];
       var vc = users.filter((user) => user.points != 0);
@@ -103,6 +114,7 @@ export class VoteComponent implements OnInit {
     });
     this.amHost = this.user.uid === this.room.host.uid;
 
+    // room.isVoting
     this.voteListen$ = this.firebase
       .object('rooms/' + this.room.uid + '/isVoting')
       .valueChanges();
@@ -130,21 +142,29 @@ export class VoteComponent implements OnInit {
     if (!this.amHost) return;
 
     this.countDown = true;
-    this.countdown = 3;
+    this.countdown = this.room.countDown;
     const countdown$ = interval(1000).pipe(
-      take(this.countdown),
+      // take(this.countdown),
+      take(this.voteCountDownNumber),
       finalize(() => {
         this.isVoteCalled = true;
         this.countDown = false;
         var updates: any = {};
         updates['rooms/' + this.room.uid + '/isVoting'] = this.isVoteCalled;
+        updates['rooms/' + this.room.uid + '/countDown'] = this.room.countDown;
+
         this.firebase.database.ref().update(updates);
-        this.countdown = 3;
+        this.countdown = this.room.countDown;
       })
     );
 
     countdown$.subscribe(() => {
-      this.countdown--;
+      // this.countdown--;
+      this.voteCountDownNumber--;
+      var updates: any = {};
+      updates['rooms/' + this.room.uid + '/countDown'] =
+        this.voteCountDownNumber;
+      this.firebase.database.ref().update(updates);
     });
   }
 
