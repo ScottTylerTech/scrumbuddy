@@ -1,4 +1,75 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  font-size: 16px;
+  --text-primary: black;
+  --text-secondary: white;
+  --text-host: hsl(0, 100%, 50%);
+  --text-user: hsl(120, 100%, 30%);
+
+  --background-primary: hsl(0, 0%, 98%);
+  --background-shadow: hsl(0, 0%, 80%);
+
+  --card-primary: hsl(0, 0%, 95%);
+  --card-border-primary: hsl(0, 0%, 90%);
+
+  --button: hsl(0, 0%, 85%);
+  --button-disabled: hsl(0, 0%, 65%);
+  --button-disabled-border: hsl(0, 0%, 45%);
+  --button-primary: hsl(216, 100%, 60%);
+  --button-primary-border: hsl(216, 100%, 40%);
+  --button-success: hsl(146, 50%, 36%);
+  --button-success-border: hsl(146, 50%, 16%);
+  --button-warn: hsl(0, 100%, 50%);
+  --button-warn-border: hsl(0, 100%, 20%);
+
+  background-color: var(--background-primary);
+}
+
+// @media (prefers-color-scheme: dark) {
+//   :root {
+//     --text-primary: hsl(0, 0%, 35%);
+//     --text-secondary: hsl(0, 0%, 85%);
+//     --text-host: hsl(0, 65%, 60%);
+//     --text-user: hsl(120, 100%, 30%);
+
+//     --background-primary: hsl(0, 0%, 12%);
+//     --background-shadow: hsl(0, 0%, 20%);
+
+//     --card-primary: hsl(0, 0%, 25%);
+//     --card-border-primary: hsl(0, 0%, 25%);
+
+//     --button-disabled: hsl(0, 0%, 45%);
+//   }
+
+//   .button {
+//     color: var(--text-secondary);
+//   }
+//   .button-primary {
+//     color: var(--text-primary);
+//   }
+
+//   .button-warn {
+//     color: var(--text-secondary);
+//   }
+// }
+
+input {
+  background-color: var(--background-primary);
+  border-color: var(--background-shadow);
+  color: var(--text-primary);
+}
+
+label {
+  color: var(--text-primary);
+}
+
+h1,
+h2,
+h3,
+p {
+  color: var(--text-primary);
+}
+
 .content {
   display: flex;
   margin: 80px auto 32px;
@@ -16,8 +87,8 @@
 
 .card {
   border-radius: 4px;
-  border: 1px solid hsl(0, 0%, 93%);
-  background-color: hsl(0, 0%, 98%);
+  border: 1px solid var(--card-border-primary);
+  background-color: var(--card-primary);
   height: auto;
   width: 300px;
   margin: 0 8px 16px;
@@ -31,8 +102,8 @@
 
 .name-card {
   border-radius: 4px;
-  border: 1px solid hsl(0, 0%, 93%);
-  background-color: hsl(0, 0%, 98%);
+  border: 1px solid var(--card-border-primary);
+  background-color: var(--card-primary);
   height: auto;
   width: clamp(200px, 30vw, 300px);
   margin: 0 8px 16px;
@@ -71,79 +142,76 @@
 
 .button {
   border-radius: 4px;
-  background-color: hsl(0, 0%, 85%);
+  background-color: var(--button);
+  border-color: var(--button-primary-border);
+  color: var(--text-primary);
   margin: 1vw 1vh;
   text-align: center;
   width: 96px;
   height: 36px;
-}
-
-.button:disabled {
-  border-radius: 4px;
-  color: hsl(0, 0%, 100%);
-  background-color: hsl(0, 0%, 85%);
-  border-color: hsl(0, 100%, 50%);
-  pointer-events: none;
-}
-
-.button:hover {
-  border-radius: 6px;
-  background-color: hsl(146, 50%, 36%);
-  border-color: hsl(146, 50%, 16%);
-  color: hsl(0, 0%, 100%);
-  transform: scale(1.1, 1.1);
-  -webkit-transform: scale(1.1, 1.1);
-  -moz-transform: scale(1.1, 1.1);
+  &:hover {
+    border-radius: 6px;
+    background-color: var(--button-success);
+    border-color: var(--button-success-border);
+    color: var(--text-secondary);
+    transform: scale(1.1, 1.1);
+    -webkit-transform: scale(1.1, 1.1);
+    -moz-transform: scale(1.1, 1.1);
+  }
+  &:disabled {
+    border-radius: 4px;
+    color: var(--text-secondary);
+    background-color: var(--button-disabled);
+    border-color: var(--button-warn);
+    pointer-events: none;
+  }
 }
 
 .button-primary {
   border-radius: 4px;
   border-width: 2px;
-  border-color: hsl(216, 100%, 50%);
-  color: hsl(0, 0%, 100%);
-  background-color: hsl(216, 100%, 60%);
+  border-color: var(--button-primary);
+  color: var(--text-secondary);
+  background-color: var(--button-primary-border);
   margin: 1vw 1vh;
   width: 96px;
   height: 36px;
-}
-
-.button-primary:disabled {
-  border-radius: 4px;
-  color: white;
-  background-color: gainsboro;
-  border-color: hsl(0, 100%, 50%);
-  pointer-events: none;
-}
-.button-primary:hover {
-  background-color: hsl(146, 50%, 36%);
-  border-color: hsl(146, 50%, 16%);
-  transform: scale(1.1, 1.1);
-  -webkit-transform: scale(1.1, 1.1);
-  -moz-transform: scale(1.1, 1.1);
+  &:hover {
+    background-color: var(--button-success);
+    border-color: var(--button-success-border);
+    transform: scale(1.1, 1.1);
+    -webkit-transform: scale(1.1, 1.1);
+    -moz-transform: scale(1.1, 1.1);
+  }
+  &:disabled {
+    border-radius: 4px;
+    color: var(--text-secondary);
+    background-color: var(--button-disabled);
+    border-color: var(--button-warn);
+    pointer-events: none;
+  }
 }
 
 .button-warn {
   border-radius: 4px;
-  background-color: hsl(0, 0%, 85%);
-  color: black;
+  background-color: var(--button);
+  color: var(--text-primary);
   margin: 1vw 1vh;
   text-align: center;
   width: 96px;
   height: 36px;
+  &:hover {
+    border-color: var(--button-warn);
+    background-color: var(--button-warn-border);
+    color: var(--text-secondary);
+    transform: scale(1.1, 1.1);
+    -webkit-transform: scale(1.1, 1.1);
+    -moz-transform: scale(1.1, 1.1);
+  }
 }
-
-.button-warn:hover {
-  border-color: hsl(0, 100%, 64%);
-  background-color: hsl(0, 100%, 44%);
-  color: white;
-  transform: scale(1.1, 1.1);
-  -webkit-transform: scale(1.1, 1.1);
-  -moz-transform: scale(1.1, 1.1);
-}
-
 .button-shadow {
   // background: #ccc;
-  box-shadow: 2px 3px 4px 1px hsl(0, 0%, 59%);
+  box-shadow: 2px 3px 4px 1px var(--background-shadow);
   -webkit-box-shadow: 2px 3px 4px 1px hsl(0, 0%, 59%);
   // width: auto;
   // height: auto;
