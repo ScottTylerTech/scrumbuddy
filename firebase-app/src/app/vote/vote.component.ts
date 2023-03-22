@@ -48,7 +48,7 @@ export class VoteComponent implements OnInit {
   amHost: boolean = false;
   showVotesToggle: boolean = false;
   showNumbersToggle: boolean = false;
-  countDown: boolean = false;
+  isCountingDown: boolean = false;
   countdown: number = 0;
   voteCountDownNumber: number = 0;
   // user
@@ -88,26 +88,15 @@ export class VoteComponent implements OnInit {
       .valueChanges();
 
     this.roomValueChanges$.subscribe((room) => {
-      // console.log('room: ', room);
-      // leave room if empty
       if (room === null) {
         this.leaveRoom();
         return;
       }
-      if (room.countDown === '') {
-        var updates: any = {};
-        updates['rooms/' + this.room.uid + '/countDown/'] = 3;
-        this.firebase.database.ref().update(updates);
-      }
 
-      this.voteCountDownNumber = room.countDown;
-      // console.log('room.countDown: ', room.countDown);
       this.countDownStart$.next(
-        this.voteCountDownNumber !== this.room.countDown
+        this.room.countDown === this.room.countDownReset
       );
-      // console.log('this.countDownStart$: ', this.countDownStart$.value);
       this.isVoteCalled = room.isVoting;
-      // console.log('room.isVoting: ', room.isVoting);
     });
 
     // room.users
@@ -147,41 +136,53 @@ export class VoteComponent implements OnInit {
   }
 
   private ResetCountDown(): void {
-    this.countDown = false;
-    this.countdown = this.room.countDown;
-    this.voteCountDownNumber = this.room.countDown;
+    this.isCountingDown = false;
+    this.countdown = this.room.countDownReset;
+    this.voteCountDownNumber = this.room.countDownReset;
     var updates: any = {};
     updates['rooms/' + this.room.uid + '/isVoting'] = this.isVoteCalled;
-    updates['rooms/' + this.room.uid + '/countDown'] = this.room.countDown;
+    updates['rooms/' + this.room.uid + '/countDown'] = this.room.countDownReset;
     this.firebase.database.ref().update(updates);
   }
 
   public callVote(): void {
     if (!this.amHost) return;
-    if (this.countDown) {
+    if (this.isCountingDown) {
       this.ResetCountDown();
       return;
     }
+    this.isCountingDown = true;
+    this.voteCountDownNumber = this.room.countDownReset;
 
-    this.countDown = true;
-    this.countdown = this.room.countDown;
-    const countdown$ = interval(1000).pipe(
-      take(this.voteCountDownNumber),
+    var updates: any = {};
+    updates['rooms/' + this.room.uid + '/countDown'] = this.voteCountDownNumber;
+    this.firebase.database.ref().update(updates);
+
+    const counter$ = interval(1000).pipe(
+      take(this.room.countDownReset + 1),
       finalize(() => {
         this.isVoteCalled = true;
-        this.countDown = false;
+        this.isCountingDown = false;
+
         var updates: any = {};
         updates['rooms/' + this.room.uid + '/isVoting'] = this.isVoteCalled;
-        updates['rooms/' + this.room.uid + '/countDown'] = this.room.countDown;
-
+        updates['rooms/' + this.room.uid + '/countDown'] =
+          this.room.countDownReset;
         this.firebase.database.ref().update(updates);
-        this.countdown = this.room.countDown;
       })
     );
 
-    countdown$.subscribe(() => {
-      // this.countdown--;
+    counter$.subscribe(() => {
       this.voteCountDownNumber--;
+      this.countDownStart$.next(
+        this.voteCountDownNumber !== this.room.countDownReset
+      );
+      console.log(
+        'countdown: ',
+        this.voteCountDownNumber,
+        ' .. ',
+        this.room.countDownReset
+      );
       var updates: any = {};
       updates['rooms/' + this.room.uid + '/countDown'] =
         this.voteCountDownNumber;
@@ -196,7 +197,7 @@ export class VoteComponent implements OnInit {
       updates['rooms/' + this.room.uid + '/users/' + user.uid + '/points'] = 0;
     });
     updates['rooms/' + this.room.uid + '/isVoting'] = this.isVoteCalled;
-    updates['rooms/' + this.room.uid + '/countDown'] = this.room.countDown;
+    updates['rooms/' + this.room.uid + '/countDown'] = this.room.countDownReset;
     this.firebase.database.ref().update(updates);
     this.countdown = this.room.countDown;
     this.userSelection = '';

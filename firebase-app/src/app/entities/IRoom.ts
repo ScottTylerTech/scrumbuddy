@@ -9,4 +9,5 @@ export interface IRoom {
   users: IUser[];
   isVoting: boolean;
   countDown: number;
+  countDownReset: number;
 }

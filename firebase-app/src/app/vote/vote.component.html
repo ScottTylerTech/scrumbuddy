@@ -141,9 +141,8 @@
       <app-chart
         [callVote]="changingValue"
         [resetVote]="resetVoteSub"
-        [voteIsCalled]="countDown"
-        [counter]="voteCountDownNumber"
-        [countDownStart$]="countDownStart$"
+        [voteIsCalled]="isCountingDown"
+        [room$]="roomValueChanges$"
       ></app-chart>
     </div>
     <!-- </div> -->

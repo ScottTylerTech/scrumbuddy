@@ -26,8 +26,8 @@ export class RoomsComponent implements OnInit {
 
   constructor(private firebase: AngularFireDatabase) {}
 
-  ngOnInit(): void {
-    let roomsRef: any = this.firebase.list('rooms');
+  async ngOnInit(): Promise<void> {
+    let roomsRef: any = await this.firebase.list('rooms/');
     this.rooms$ = roomsRef.valueChanges();
     this.rooms$.subscribe((res) => {
       this.roomCount = res.length;

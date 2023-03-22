@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ChartConfiguration, Color } from 'chart.js';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { IRoom } from '../entities/IRoom';
 import { IUser } from '../entities/IUser';
 
 interface IResult {
@@ -17,13 +18,12 @@ interface IResult {
 export class ChartComponent implements OnInit {
   @Input() effortPoints: string[] = [];
   voteDistribution: number[] = [];
-  @Input() counter: number = 0;
+  voteCountDownNumber: number = 0;
   @Input() callVote: Subject<IUser[]> = new Subject();
   @Input() resetVote = new Subject();
-  @Input() countDownStart$: BehaviorSubject<boolean> = new BehaviorSubject(
-    false
-  );
+  countDownStart$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   @Input() voteIsCalled: boolean = false;
+  @Input() room$: Observable<any>;
 
   public barChartLegend = false;
   public barChartPlugins = [];
@@ -139,8 +139,15 @@ export class ChartComponent implements OnInit {
       this.createChart();
     });
 
+    this.room$.subscribe((room: IRoom) => {
+      if (room != null) {
+        this.countDownStart$.next(room.countDown !== room.countDownReset);
+        this.voteCountDownNumber = room.countDown + 1;
+      }
+    });
+
     this.countDownStart$.subscribe((v) => {
-      console.log('countDownStart$: ', v, ' v: ', this.counter);
+      console.log('countDownStart$: ', v, ' v: ', this.voteCountDownNumber);
     });
   }
 

@@ -1,6 +1,6 @@
 <div class="card card-shadow result-card">
   <div class="heading">
-    <h1>Effort point distribution</h1>
+    <h1 style="justify-content: center">Effort point distribution</h1>
 
     <div *ngIf="voteCalled" class="card card-shadow vote-result">
       <h3>Voting results</h3>
@@ -12,12 +12,17 @@
     </div>
   </div>
 
-  <div class="canvas">
-    <div *ngIf="countDownStart$.value">
-      <h1>{{ counter }}</h1>
+  <div
+    class="canvas"
+    *ngIf="{
+      hasCountDownStarted: countDownStart$ | async
+    } as voteCounter"
+  >
+    <div *ngIf="voteCounter.hasCountDownStarted && voteCountDownNumber >= 1">
+      <h1>{{ voteCountDownNumber }}</h1>
     </div>
 
-    <div *ngIf="!countDownStart$.value">
+    <div *ngIf="!voteCounter.hasCountDownStarted">
       <canvas
         baseChart
         [legend]="barChartLegend"
