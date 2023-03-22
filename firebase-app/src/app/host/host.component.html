@@ -36,12 +36,16 @@
         [class.hidden]="!isOptionMenuClosed"
         [class.menu-content]="isOptionMenuClosed"
       >
-        <input
-          matInput
-          type="text"
-          placeholder="Set count down time"
-          formControlName="countDownTime"
-        />
+        <label for="countDown">
+          Set count down time
+          <input
+            #countDown
+            matInput
+            type="text"
+            placeholder="3"
+            formControlName="countDownTime"
+          />
+        </label>
       </div>
     </div>
   </form>

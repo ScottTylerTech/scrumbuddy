@@ -28,16 +28,15 @@ export class HomeComponent implements OnInit {
   }
 
   createUser(isHost: boolean): void {
-    var dbRef = this.firebase.database.ref('users');
+    // var dbRef = this.firebase.database.ref('users');
     let user: IUser = {
       uid: uid(),
       name: this.userForm.value.name,
       points: 0,
       amHost: isHost,
     };
-    dbRef.child(user.uid).set(user);
+    // dbRef.child(user.uid).set(user);
     this.user$.next(user);
     this.userCreateEvent.emit(user);
-    // console.log('user: ', user);
   }
 }

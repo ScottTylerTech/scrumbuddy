@@ -86,12 +86,20 @@ export class VoteComponent implements OnInit {
     this.roomValueChanges$ = this.firebase
       .object('rooms/' + this.room.uid)
       .valueChanges();
+
     this.roomValueChanges$.subscribe((room) => {
+      // console.log('room: ', room);
       // leave room if empty
       if (room === null) {
         this.leaveRoom();
         return;
       }
+      if (room.countDown === '') {
+        var updates: any = {};
+        updates['rooms/' + this.room.uid + '/countDown/'] = 3;
+        this.firebase.database.ref().update(updates);
+      }
+
       this.voteCountDownNumber = room.countDown;
       // console.log('room.countDown: ', room.countDown);
       this.countDownStart$.next(
@@ -138,13 +146,26 @@ export class VoteComponent implements OnInit {
     this.firebase.database.ref().update(updates);
   }
 
+  private ResetCountDown(): void {
+    this.countDown = false;
+    this.countdown = this.room.countDown;
+    this.voteCountDownNumber = this.room.countDown;
+    var updates: any = {};
+    updates['rooms/' + this.room.uid + '/isVoting'] = this.isVoteCalled;
+    updates['rooms/' + this.room.uid + '/countDown'] = this.room.countDown;
+    this.firebase.database.ref().update(updates);
+  }
+
   public callVote(): void {
     if (!this.amHost) return;
+    if (this.countDown) {
+      this.ResetCountDown();
+      return;
+    }
 
     this.countDown = true;
     this.countdown = this.room.countDown;
     const countdown$ = interval(1000).pipe(
-      // take(this.countdown),
       take(this.voteCountDownNumber),
       finalize(() => {
         this.isVoteCalled = true;
@@ -175,7 +196,9 @@ export class VoteComponent implements OnInit {
       updates['rooms/' + this.room.uid + '/users/' + user.uid + '/points'] = 0;
     });
     updates['rooms/' + this.room.uid + '/isVoting'] = this.isVoteCalled;
+    updates['rooms/' + this.room.uid + '/countDown'] = this.room.countDown;
     this.firebase.database.ref().update(updates);
+    this.countdown = this.room.countDown;
     this.userSelection = '';
   }
 

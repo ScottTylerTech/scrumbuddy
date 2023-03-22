@@ -50,7 +50,10 @@ export class HostComponent implements OnInit {
       uid: uid(),
       users: [],
       isVoting: false,
-      countDown: this.roomForm.value.countDownTime ?? 3,
+      countDown:
+        this.roomForm.value.countDownTime === ''
+          ? 3
+          : this.roomForm.value.countDownTime,
     };
     dbRef.child(room.uid).set(room);
     this.roomCreateEvent.emit(room);
