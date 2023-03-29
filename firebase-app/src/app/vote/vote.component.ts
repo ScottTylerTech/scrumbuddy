@@ -19,6 +19,10 @@ import { IUser } from '../entities/IUser';
 import { IRoom } from '../entities/IRoom';
 import { __param } from 'tslib';
 import { LoadState } from '../entities/LoadState';
+import { environment } from 'src/environments/environment';
+import { UserService } from '../user.service';
+import { RoomService } from '../room.service';
+import { StateService } from '../state.service';
 
 @Component({
   selector: 'app-vote',
@@ -32,18 +36,7 @@ export class VoteComponent implements OnInit {
   changingValue: BehaviorSubject<IUser[]> = new BehaviorSubject([] as IUser[]);
   resetVoteSub: Subject<any> = new Subject();
   voteListen$: Observable<any>;
-  effortPoints: string[] = [
-    '0',
-    '1',
-    '2',
-    '3',
-    '5',
-    '8',
-    '13',
-    '21',
-    '34',
-    '55',
-  ];
+  effortPoints: string[];
 
   amHost: boolean = false;
   showVotesToggle: boolean = false;
@@ -71,17 +64,26 @@ export class VoteComponent implements OnInit {
   countDownStart$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   voteCount: number = 0;
 
-  constructor(private firebase: AngularFireDatabase) {}
+  constructor(
+    private firebase: AngularFireDatabase,
+    private userService: UserService,
+    private roomService: RoomService,
+    public stateService: StateService
+  ) {}
 
   ngOnInit(): void {
-    this.user$.subscribe((user) => {
-      this.user = user;
-    });
+    this.effortPoints = environment.effortPoints;
+    // this.user$.subscribe((user) => {
+    //   this.user = user;
+    // });
 
+    // user
+    this.user = this.userService.getUser();
     // room
-    this.room$.subscribe((room) => {
-      this.room = room;
-    });
+    this.room = this.roomService.getRoom();
+    // this.room$.subscribe((room) => {
+    //   this.room = room;
+    // });
 
     this.roomValueChanges$ = this.firebase
       .object('rooms/' + this.room.uid)

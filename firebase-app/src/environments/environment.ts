@@ -10,4 +10,6 @@ export const environment = {
     appId: '1:285767092754:web:956fceb737dd78c22b66cb',
     measurementId: 'G-PMLY1656VZ',
   },
+  effortPoints: ['0', '1', '2', '3', '5', '8', '13', '21', '34', '55'],
+  chrisPoints: ['0.5', '0', '1', '2', '3', '5', '8', '13', '21', '34', '55'],
 };

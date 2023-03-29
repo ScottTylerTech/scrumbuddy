@@ -18,7 +18,7 @@
       hasCountDownStarted: countDownStart$ | async
     } as voteCounter"
   >
-    <div *ngIf="voteCounter.hasCountDownStarted && voteCountDownNumber >= 1">
+    <div *ngIf="voteCounter.hasCountDownStarted && voteCountDownNumber > 1">
       <h1>{{ voteCountDownNumber }}</h1>
     </div>
 

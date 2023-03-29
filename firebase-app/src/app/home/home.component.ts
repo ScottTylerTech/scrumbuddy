@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { IUser } from '../entities/IUser';
 import { uid } from 'uid/single';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-home',
@@ -18,7 +19,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private firebase: AngularFireDatabase,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -36,7 +38,8 @@ export class HomeComponent implements OnInit {
       amHost: isHost,
     };
     // dbRef.child(user.uid).set(user);
-    this.user$.next(user);
+    // this.user$.next(user);
+    // this.userService.setUser(user);
     this.userCreateEvent.emit(user);
   }
 }

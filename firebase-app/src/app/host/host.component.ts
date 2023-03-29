@@ -12,6 +12,8 @@ import { IUser } from '../entities/IUser';
 import { BehaviorSubject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { uid } from 'uid';
+import { RoomService } from '../room.service';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-host',
@@ -27,7 +29,9 @@ export class HostComponent implements OnInit {
 
   constructor(
     private firebase: AngularFireDatabase,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private userService: UserService,
+    private roomService: RoomService
   ) {}
 
   ngOnInit(): void {
@@ -38,14 +42,15 @@ export class HostComponent implements OnInit {
   }
 
   public createRoom(): void {
-    this.user$.subscribe((user) => {
-      this.user = user;
-    });
+    // this.user$.subscribe((user) => {
+    //   this.user = user;
+    // });
 
-    var dbRef = this.firebase.database.ref('rooms');
+    const user = this.userService.getUser();
+    const dbRef = this.firebase.database.ref('rooms');
     let room: IRoom = {
       createTime: JSON.stringify(new Date()),
-      host: this.user,
+      host: user,
       roomName: this.roomForm.value.roomName,
       uid: uid(),
       users: [],
@@ -57,11 +62,12 @@ export class HostComponent implements OnInit {
           : this.roomForm.value.countDownTime,
     };
     dbRef.child(room.uid).set(room);
+    // this.roomService.setRoom(room);
     this.roomCreateEvent.emit(room);
   }
 
   public expandMenu(isClosed: boolean): void {
     this.isOptionMenuClosed = isClosed;
-    console.log(this.isOptionMenuClosed);
+    // console.log(this.isOptionMenuClosed);
   }
 }

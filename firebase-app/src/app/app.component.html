@@ -60,24 +60,24 @@
   </div>
 </div>
 
-<div *ngIf="{ loadState: state$ | async } as state">
+<div *ngIf="{ loadState: stateService.state$ | async } as app">
   <app-home
-    *ngIf="state.loadState === LoadState.home"
+    *ngIf="app.loadState === LoadState.home"
     (userCreateEvent)="setUser($event)"
   ></app-home>
   <app-rooms
-    *ngIf="state.loadState === LoadState.rooms"
+    *ngIf="app.loadState === LoadState.rooms"
     [user$]="user$"
     (roomSelectEvent)="setRoom($event)"
     (updateUserEvent)="setUser($event)"
   ></app-rooms>
   <app-host
-    *ngIf="state.loadState === LoadState.host"
+    *ngIf="app.loadState === LoadState.host"
     [user$]="user$"
     (roomCreateEvent)="setRoom($event)"
   ></app-host>
   <app-vote
-    *ngIf="state.loadState === LoadState.vote"
+    *ngIf="app.loadState === LoadState.vote"
     [user$]="user$"
     [room$]="room$"
     (leaveRoomEvent)="updateState($event)"

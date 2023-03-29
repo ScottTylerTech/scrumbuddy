@@ -4,6 +4,9 @@ import { BehaviorSubject } from 'rxjs';
 import { IRoom } from './entities/IRoom';
 import { IUser } from './entities/IUser';
 import { LoadState } from './entities/LoadState';
+import { RoomService } from './room.service';
+import { StateService } from './state.service';
+import { UserService } from './user.service';
 
 @Component({
   selector: 'app-root',
@@ -20,36 +23,46 @@ export class AppComponent implements OnInit {
 
   amHost: boolean = false;
 
-  constructor(private firebase: AngularFireDatabase) {}
+  constructor(
+    private firebase: AngularFireDatabase,
+    public stateService: StateService,
+    private userService: UserService,
+    private roomService: RoomService
+  ) {}
 
   ngOnInit(): void {
-    this.state$.next(LoadState.home);
-    this.user$.subscribe((user) => {
-      this.user = user;
-      this.amHost = user.amHost ?? false;
-    });
+    this.stateService.next(LoadState.home);
+    // this.state$.next(LoadState.home);
+    // this.user$.subscribe((user) => {
+    //   this.user = user;
+    //   this.amHost = user.amHost ?? false;
+    // });
   }
   setUser(user: IUser): void {
-    this.user$.next(user);
-    if (this.amHost) {
-      this.state$.next(LoadState.host);
+    this.userService.setUser(user);
+    if (this.userService.isUserHost()) {
+      // this.state$.next(LoadState.host);
+      this.stateService.next(LoadState.host);
     } else {
-      this.state$.next(LoadState.rooms);
+      this.stateService.next(LoadState.rooms);
+      // this.state$.next(LoadState.rooms);
     }
   }
 
   setRoom(room: IRoom): void {
-    this.room$.next(room);
+    // this.room$.next(room);
+    // var usersDBRef = this.firebase.database.ref(
+    //   'rooms/' + room.uid + '/users/'
+    // );
+    // usersDBRef.child(this.user.uid).set(this.user);
+    // this.state$.next(LoadState.vote);
 
-    var usersDBRef = this.firebase.database.ref(
-      'rooms/' + room.uid + '/users/'
-    );
-    usersDBRef.child(this.user.uid).set(this.user);
-
-    this.state$.next(LoadState.vote);
+    this.roomService.setRoom(room);
+    this.stateService.next(LoadState.vote);
   }
 
   updateState(state: LoadState): void {
-    this.state$.next(state);
+    // this.state$.next(state);
+    this.stateService.next(state);
   }
 }

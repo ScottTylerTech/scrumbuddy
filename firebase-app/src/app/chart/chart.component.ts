@@ -95,7 +95,6 @@ export class ChartComponent implements OnInit {
       datasets: [
         {
           // no top label
-
           label: '',
           data: this.countArray,
           backgroundColor: [
