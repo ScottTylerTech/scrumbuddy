@@ -16,6 +16,9 @@ import { ChartComponent } from './chart/chart.component';
 import { NgChartsModule } from 'ng2-charts';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -36,6 +39,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     NgChartsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
+    BrowserAnimationsModule,
+    MatButtonModule,
+    MatIconModule,
   ],
   exports: [
     FormsModule,

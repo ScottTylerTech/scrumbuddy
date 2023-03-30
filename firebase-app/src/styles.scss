@@ -149,6 +149,7 @@ p {
   text-align: center;
   width: 96px;
   height: 36px;
+  cursor: pointer;
   &:hover {
     border-radius: 6px;
     background-color: var(--button-success);
@@ -176,6 +177,7 @@ p {
   margin: 1vw 1vh;
   width: 96px;
   height: 36px;
+  cursor: pointer;
   &:hover {
     background-color: var(--button-success);
     border-color: var(--button-success-border);
@@ -200,6 +202,7 @@ p {
   text-align: center;
   width: 96px;
   height: 36px;
+  cursor: pointer;
   &:hover {
     border-color: var(--button-warn);
     background-color: var(--button-warn-border);

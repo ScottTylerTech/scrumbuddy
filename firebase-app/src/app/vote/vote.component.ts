@@ -73,17 +73,11 @@ export class VoteComponent implements OnInit {
 
   ngOnInit(): void {
     this.effortPoints = environment.effortPoints;
-    // this.user$.subscribe((user) => {
-    //   this.user = user;
-    // });
 
     // user
     this.user = this.userService.getUser();
     // room
     this.room = this.roomService.getRoom();
-    // this.room$.subscribe((room) => {
-    //   this.room = room;
-    // });
 
     this.roomValueChanges$ = this.firebase
       .object('rooms/' + this.room.uid)

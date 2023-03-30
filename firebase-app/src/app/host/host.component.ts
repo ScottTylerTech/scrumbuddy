@@ -14,6 +14,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { uid } from 'uid';
 import { RoomService } from '../room.service';
 import { UserService } from '../user.service';
+import { StateService } from '../state.service';
+import { LoadState } from '../entities/LoadState';
 
 @Component({
   selector: 'app-host',
@@ -31,7 +33,7 @@ export class HostComponent implements OnInit {
     private firebase: AngularFireDatabase,
     private formBuilder: FormBuilder,
     private userService: UserService,
-    private roomService: RoomService
+    private stateService: StateService
   ) {}
 
   ngOnInit(): void {
@@ -42,10 +44,6 @@ export class HostComponent implements OnInit {
   }
 
   public createRoom(): void {
-    // this.user$.subscribe((user) => {
-    //   this.user = user;
-    // });
-
     const user = this.userService.getUser();
     const dbRef = this.firebase.database.ref('rooms');
     let room: IRoom = {
@@ -62,12 +60,14 @@ export class HostComponent implements OnInit {
           : this.roomForm.value.countDownTime,
     };
     dbRef.child(room.uid).set(room);
-    // this.roomService.setRoom(room);
     this.roomCreateEvent.emit(room);
   }
 
   public expandMenu(isClosed: boolean): void {
     this.isOptionMenuClosed = isClosed;
-    // console.log(this.isOptionMenuClosed);
+  }
+
+  public onCancelClick(): void {
+    this.stateService.next(LoadState.home);
   }
 }

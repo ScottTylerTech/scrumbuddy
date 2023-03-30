@@ -1,5 +1,19 @@
 <div class="content">
-  <div>
+  <div
+    style="
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      width: 300px;
+    "
+  >
+    <button
+      mat-icon-button
+      aria-label="Navigate back"
+      (click)="onCancelClick()"
+    >
+      <mat-icon>arrow_back_ios</mat-icon>
+    </button>
     <h1>Room Selection</h1>
   </div>
   <div *ngIf="roomCount === 0">

@@ -28,20 +28,9 @@
   </div>
 
   <div class="title">Scrumbuddy</div>
-  <div
-    style="
-      font-family: 'Tilt Neon', cursive;
-      font-size: x-large;
-      width: auto;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-    "
-  >
-    <!-- <div style="margin: 8px">{{ title }}</div> -->
-  </div>
 
   <div class="spacer"></div>
+
   <!-- git hub  -->
   <div class="icon">
     <a href="https://github.com/ScottTylerTech/scrumbuddy" target="_blank">
@@ -67,21 +56,19 @@
   ></app-home>
   <app-rooms
     *ngIf="app.loadState === LoadState.rooms"
-    [user$]="user$"
     (roomSelectEvent)="setRoom($event)"
     (updateUserEvent)="setUser($event)"
   ></app-rooms>
   <app-host
     *ngIf="app.loadState === LoadState.host"
-    [user$]="user$"
     (roomCreateEvent)="setRoom($event)"
   ></app-host>
   <app-vote
     *ngIf="app.loadState === LoadState.vote"
-    [user$]="user$"
-    [room$]="room$"
     (leaveRoomEvent)="updateState($event)"
   ></app-vote>
 </div>
 
-<div class="footer"></div>
+<div class="footer">
+  <div class="footer-content">v1.1</div>
+</div>

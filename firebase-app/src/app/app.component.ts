@@ -32,31 +32,18 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.stateService.next(LoadState.home);
-    // this.state$.next(LoadState.home);
-    // this.user$.subscribe((user) => {
-    //   this.user = user;
-    //   this.amHost = user.amHost ?? false;
-    // });
   }
+
   setUser(user: IUser): void {
     this.userService.setUser(user);
     if (this.userService.isUserHost()) {
-      // this.state$.next(LoadState.host);
       this.stateService.next(LoadState.host);
     } else {
       this.stateService.next(LoadState.rooms);
-      // this.state$.next(LoadState.rooms);
     }
   }
 
   setRoom(room: IRoom): void {
-    // this.room$.next(room);
-    // var usersDBRef = this.firebase.database.ref(
-    //   'rooms/' + room.uid + '/users/'
-    // );
-    // usersDBRef.child(this.user.uid).set(this.user);
-    // this.state$.next(LoadState.vote);
-
     this.roomService.setRoom(room);
     this.stateService.next(LoadState.vote);
   }

@@ -8,6 +8,7 @@
       formControlName="roomName"
     />
     <div class="button-row">
+      <button class="button-warn" (click)="onCancelClick()">Cancel</button>
       <button
         class="button-primary"
         [disabled]="roomForm.invalid"
@@ -17,7 +18,7 @@
       </button>
     </div>
 
-    <div style="width: 90%">
+    <div style="width: 90%" *ngIf="false">
       <div class="menu-header">
         <button
           style="background-color: var(--card-primary)"

@@ -10,6 +10,10 @@ import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { Observable, Subject } from 'rxjs';
 import { IRoom } from '../entities/IRoom';
 import { IUser } from '../entities/IUser';
+import { LoadState } from '../entities/LoadState';
+import { RoomService } from '../room.service';
+import { StateService } from '../state.service';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-rooms',
@@ -24,19 +28,21 @@ export class RoomsComponent implements OnInit {
   user: IUser = {} as IUser;
   roomCount: number = 0;
 
-  constructor(private firebase: AngularFireDatabase) {}
+  constructor(
+    private firebase: AngularFireDatabase,
+    private stateService: StateService,
+    private userService: UserService,
+    private roomService: RoomService
+  ) {}
 
   async ngOnInit(): Promise<void> {
     let roomsRef: any = await this.firebase.list('rooms/');
     this.rooms$ = roomsRef.valueChanges();
     this.rooms$.subscribe((res) => {
       this.roomCount = res.length;
-      // console.log('Rooms', { res });
     });
 
-    this.user$.subscribe((user) => {
-      this.user = user;
-    });
+    this.user = this.userService.getUser();
   }
 
   public joinRoom(roomUID: string): void {
@@ -47,7 +53,6 @@ export class RoomsComponent implements OnInit {
 
     var ref = this.firebase.database.ref('rooms/' + roomUID + '/users');
     ref.child(this.user.uid).set(this.user);
-    // console.log('selectedRoom', { selectedRoom });
     this.roomSelectEvent.emit(selectedRoom);
   }
 
@@ -66,5 +71,9 @@ export class RoomsComponent implements OnInit {
 
   getRomCount(value: any): number {
     return Object.keys(value).length;
+  }
+
+  public onCancelClick(): void {
+    this.stateService.next(LoadState.home);
   }
 }
