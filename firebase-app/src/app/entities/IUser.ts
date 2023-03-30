@@ -3,4 +3,5 @@ export interface IUser {
   name: string;
   points: number;
   amHost?: boolean;
+  votingHistory: number[];
 }

@@ -1,58 +1,61 @@
 <div class="content">
-  <div
-    style="
-      display: flex;
-      align-items: center;
-      justify-content: start;
-      width: 300px;
-    "
-  >
-    <button
-      mat-icon-button
-      aria-label="Navigate back"
-      (click)="onCancelClick()"
+  <div class="card card-shadow" style="width: 30vw">
+    <div
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        width: 300px;
+      "
     >
-      <mat-icon>arrow_back_ios</mat-icon>
-    </button>
-    <h1>Room Selection</h1>
-  </div>
-  <div *ngIf="roomCount === 0">
-    <p>There are no rooms.</p>
-    <button (click)="host()">Click to host</button>
-  </div>
-  <div *ngIf="roomCount > 0">
-    <div *ngFor="let room of rooms$ | async">
-      <div
-        class="card card-shadow"
-        style="
-          flex-direction: column;
-          justify-content: space-between;
-          width: 300px;
-        "
+      <button
+        mat-icon-button
+        aria-label="Navigate back"
+        (click)="onCancelClick()"
       >
-        <div class="room-card-row">
-          <h2>Room name:</h2>
-          <h2>{{ room.roomName }}</h2>
-        </div>
-        <div class="room-card-row">
-          <h3>Room host:</h3>
-          <h3>{{ room.host.name }}</h3>
-        </div>
-        <div class="room-card-row">
-          <h3>Date created:</h3>
-          <h3>{{ getDate(room.createTime) | date }}</h3>
-        </div>
-        <div class="room-card-row">
-          <h3>Users in room:</h3>
-          <h3>{{ getRomCount(room.users) }}</h3>
-        </div>
-        <div class="room-card-row" style="justify-content: end">
-          <button
-            class="button-primary button-shadow"
-            (click)="joinRoom(room.uid)"
-          >
-            Join
-          </button>
+        <mat-icon>arrow_back_ios</mat-icon>
+      </button>
+      <h1>Room Selection</h1>
+    </div>
+
+    <div *ngIf="roomCount === 0">
+      <p>There are no rooms.</p>
+      <button (click)="host()">Click to host</button>
+    </div>
+    <div *ngIf="roomCount > 0">
+      <div *ngFor="let room of rooms$ | async">
+        <div
+          class="card card-shadow"
+          style="
+            flex-direction: column;
+            justify-content: space-between;
+            width: 300px;
+          "
+        >
+          <div class="room-card-row">
+            <h2>Room name:</h2>
+            <h2>{{ room.roomName }}</h2>
+          </div>
+          <div class="room-card-row">
+            <h3>Room host:</h3>
+            <h3>{{ room.host.name }}</h3>
+          </div>
+          <div class="room-card-row">
+            <h3>Date created:</h3>
+            <h3>{{ getDate(room.createTime) | date }}</h3>
+          </div>
+          <div class="room-card-row">
+            <h3>Users in room:</h3>
+            <h3>{{ getRomCount(room.users) }}</h3>
+          </div>
+          <div class="room-card-row" style="justify-content: end">
+            <button
+              class="button-primary button-shadow"
+              (click)="joinRoom(room.uid)"
+            >
+              Join
+            </button>
+          </div>
         </div>
       </div>
     </div>

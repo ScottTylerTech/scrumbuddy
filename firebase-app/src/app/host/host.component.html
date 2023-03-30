@@ -1,6 +1,17 @@
 <div class="content">
   <form [formGroup]="roomForm" class="card card-shadow">
-    <h1>Create room</h1>
+    <div
+      style="display: flex; align-items: center; justify-content: space-between"
+    >
+      <button
+        mat-icon-button
+        aria-label="Navigate back"
+        (click)="onCancelClick()"
+      >
+        <mat-icon>arrow_back_ios</mat-icon>
+      </button>
+      <h1>Create room</h1>
+    </div>
     <input
       matInput
       type="text"
@@ -8,7 +19,6 @@
       formControlName="roomName"
     />
     <div class="button-row">
-      <button class="button-warn" (click)="onCancelClick()">Cancel</button>
       <button
         class="button-primary"
         [disabled]="roomForm.invalid"

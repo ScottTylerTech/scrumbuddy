@@ -30,6 +30,7 @@ export class HomeComponent implements OnInit {
       name: this.userForm.value.name,
       points: 0,
       amHost: isHost,
+      votingHistory: [],
     };
     this.userCreateEvent.emit(user);
   }
