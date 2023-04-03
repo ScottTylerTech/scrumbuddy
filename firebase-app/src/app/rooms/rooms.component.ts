@@ -11,9 +11,9 @@ import { Observable, Subject } from 'rxjs';
 import { IRoom } from '../entities/IRoom';
 import { IUser } from '../entities/IUser';
 import { LoadState } from '../entities/LoadState';
-import { RoomService } from '../room.service';
-import { StateService } from '../state.service';
-import { UserService } from '../user.service';
+import { RoomService } from '../services/room.service';
+import { StateService } from '../services/state.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-rooms',
@@ -21,7 +21,6 @@ import { UserService } from '../user.service';
   styleUrls: ['./rooms.component.scss'],
 })
 export class RoomsComponent implements OnInit {
-  @Input() user$: Subject<IUser> = new Subject();
   @Output() roomSelectEvent: EventEmitter<IRoom> = new EventEmitter<IRoom>();
   @Output() updateUserEvent: EventEmitter<IUser> = new EventEmitter<IUser>();
   rooms$: Observable<IRoom[]>;
@@ -69,7 +68,7 @@ export class RoomsComponent implements OnInit {
     return new Date(date);
   }
 
-  getRomCount(value: any): number {
+  getRoomCount(value: any): number {
     return Object.keys(value).length;
   }
 

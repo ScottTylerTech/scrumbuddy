@@ -196,6 +196,7 @@ p {
 
 .button-warn {
   border-radius: 4px;
+  border-color: var(--button-warn);
   background-color: var(--button);
   color: var(--text-primary);
   margin: 1vw 1vh;
@@ -218,6 +219,13 @@ p {
   -webkit-box-shadow: 2px 3px 4px 1px hsl(0, 0%, 59%);
   // width: auto;
   // height: auto;
+}
+
+.form-input {
+  border-radius: 4px;
+  border-color: var(--button-primary);
+  background-color: var(--card-primary);
+  color: var(--text-primary);
 }
 
 .spacer {

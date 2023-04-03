@@ -15,14 +15,16 @@
   <div
     class="canvas"
     *ngIf="{
-      hasCountDownStarted: countDownStart$ | async
+      hasCountDownStarted: countDownStart$ | async,
+      counter: countDownService.count | async,
+      isCountingDown: countDownService.isCountingDown | async
     } as voteCounter"
   >
-    <div *ngIf="voteCounter.hasCountDownStarted && voteCountDownNumber > 1">
-      <h1>{{ voteCountDownNumber }}</h1>
+    <div *ngIf="voteCounter.isCountingDown">
+      <h1>{{ voteCounter.counter }}</h1>
     </div>
 
-    <div *ngIf="!voteCounter.hasCountDownStarted">
+    <div *ngIf="!voteCounter.isCountingDown">
       <canvas
         baseChart
         [legend]="barChartLegend"

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, last, Observable, of } from 'rxjs';
-import { IUser } from './entities/IUser';
+import { IUser } from '../entities/IUser';
 
 @Injectable({
   providedIn: 'root',

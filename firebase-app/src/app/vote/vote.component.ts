@@ -20,9 +20,11 @@ import { IRoom } from '../entities/IRoom';
 import { __param } from 'tslib';
 import { LoadState } from '../entities/LoadState';
 import { environment } from 'src/environments/environment';
-import { UserService } from '../user.service';
-import { RoomService } from '../room.service';
-import { StateService } from '../state.service';
+import { UserService } from '../services/user.service';
+import { RoomService } from '../services/room.service';
+import { StateService } from '../services/state.service';
+import { CountDownService } from '../services/count-down.service';
+import { FirebaseService } from '../services/firebase.service';
 
 @Component({
   selector: 'app-vote',
@@ -63,12 +65,15 @@ export class VoteComponent implements OnInit {
   isVoteCalled: boolean = false;
   countDownStart$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   voteCount: number = 0;
+  startCountDown$: any;
 
   constructor(
     private firebase: AngularFireDatabase,
     private userService: UserService,
     private roomService: RoomService,
-    public stateService: StateService
+    public stateService: StateService,
+    private countDownService: CountDownService,
+    private firebaseService: FirebaseService
   ) {}
 
   ngOnInit(): void {
@@ -82,6 +87,18 @@ export class VoteComponent implements OnInit {
     this.roomValueChanges$ = this.firebase
       .object('rooms/' + this.room.uid)
       .valueChanges();
+
+    this.startCountDown$ = this.firebase
+      .object('rooms/' + this.room.uid + '/startCountDown')
+      .valueChanges();
+
+    this.startCountDown$.subscribe((bool: boolean) => {
+      if (bool) {
+        this.countDownService.startCountDownEmitter.emit(
+          this.room.countDownReset
+        );
+      }
+    });
 
     this.roomValueChanges$.subscribe((room) => {
       if (room === null) {
@@ -123,78 +140,66 @@ export class VoteComponent implements OnInit {
 
   public castVote(point: string): void {
     this.userSelection = point;
-    // console.log('selected button: ', point);
-    var updates: any = {};
-    updates['rooms/' + this.room.uid + '/users/' + this.user.uid + '/points'] =
-      Number(point);
-
-    this.firebase.database.ref().update(updates);
+    this.firebaseService.enqueueUpdate(
+      'rooms/' + this.room.uid + '/users/' + this.user.uid + '/points',
+      Number(point)
+    );
+    this.firebaseService.postUpdates();
   }
 
   private ResetCountDown(): void {
     this.isCountingDown = false;
     this.countdown = this.room.countDownReset;
     this.voteCountDownNumber = this.room.countDownReset;
-    var updates: any = {};
-    updates['rooms/' + this.room.uid + '/isVoting'] = this.isVoteCalled;
-    updates['rooms/' + this.room.uid + '/countDown'] = this.room.countDownReset;
-    this.firebase.database.ref().update(updates);
+
+    this.firebaseService.enqueueUpdate(
+      'rooms/' + this.room.uid + '/isVoting',
+      this.isVoteCalled
+    );
+    this.firebaseService.enqueueUpdate(
+      'rooms/' + this.room.uid + '/countDown',
+      this.room.countDownReset
+    );
+    this.firebaseService.postUpdates();
   }
 
   public callVote(): void {
-    if (!this.amHost) return;
-    if (this.isCountingDown) {
-      this.ResetCountDown();
-      return;
-    }
-    this.isCountingDown = true;
-    this.voteCountDownNumber = this.room.countDownReset;
+    // if (!this.amHost) return;
+    // if (this.isCountingDown) {
+    //   this.ResetCountDown();
+    //   return;
+    // }
+    // this.isCountingDown = true;
+    // this.voteCountDownNumber = this.room.countDownReset;
 
-    var updates: any = {};
-    updates['rooms/' + this.room.uid + '/countDown'] = this.voteCountDownNumber;
-    this.firebase.database.ref().update(updates);
-
-    const counter$ = interval(1000).pipe(
-      take(this.room.countDownReset + 1),
-      finalize(() => {
-        this.isVoteCalled = true;
-        this.isCountingDown = false;
-
-        var updates: any = {};
-        updates['rooms/' + this.room.uid + '/isVoting'] = this.isVoteCalled;
-        updates['rooms/' + this.room.uid + '/countDown'] =
-          this.room.countDownReset;
-        this.firebase.database.ref().update(updates);
-      })
+    this.firebaseService.enqueueUpdate(
+      'rooms/' + this.room.uid + '/countDown',
+      this.voteCountDownNumber
     );
-
-    counter$.subscribe(() => {
-      this.voteCountDownNumber--;
-      this.countDownStart$.next(
-        this.voteCountDownNumber !== this.room.countDownReset
-      );
-      console.log(
-        'countdown: ',
-        this.voteCountDownNumber,
-        ' .. ',
-        this.room.countDownReset
-      );
-      var updates: any = {};
-      updates['rooms/' + this.room.uid + '/countDown'] =
-        this.voteCountDownNumber;
-      this.firebase.database.ref().update(updates);
-    });
+    this.firebaseService.enqueueUpdate(
+      'rooms/' + this.room.uid + '/startCountDown',
+      true
+    );
+    this.firebaseService.postUpdates();
   }
 
   public resetVote(): void {
     this.isVoteCalled = false;
-    var updates: any = {};
     this.users.forEach((user) => {
-      updates['rooms/' + this.room.uid + '/users/' + user.uid + '/points'] = 0;
+      this.firebaseService.enqueueUpdate(
+        'rooms/' + this.room.uid + '/users/' + user.uid + '/points',
+        0
+      );
     });
-    updates['rooms/' + this.room.uid + '/isVoting'] = this.isVoteCalled;
-    updates['rooms/' + this.room.uid + '/countDown'] = this.room.countDownReset;
-    this.firebase.database.ref().update(updates);
+    this.firebaseService.enqueueUpdate(
+      'rooms/' + this.room.uid + '/isVoting',
+      this.isVoteCalled
+    );
+    this.firebaseService.enqueueUpdate(
+      'rooms/' + this.room.uid + '/countDown',
+      this.room.countDownReset
+    );
+    this.firebaseService.postUpdates();
     this.countdown = this.room.countDown;
     this.userSelection = '';
   }

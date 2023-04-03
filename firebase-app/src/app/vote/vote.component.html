@@ -7,18 +7,25 @@
     <!-- room tool -->
     <div class="card card-shadow room-tools">
       <h3 style="text-align: center">Room tools</h3>
-      <button
-        class="button-primary"
-        style="margin: 0 4px"
-        [disabled]="!amHost"
-        (click)="showVotes()"
-      >
-        Toggle votes
-      </button>
-      <label>
-        <input [disabled]="!amHost" type="checkbox" (change)="showNumbers()" />
-        Show numbers
-      </label>
+      <div *ngIf="amHost">
+        <button
+          class="button-primary"
+          style="margin: 0 4px"
+          [disabled]="!amHost"
+          (click)="showVotes()"
+        >
+          Toggle votes
+        </button>
+        <label>
+          <input
+            [disabled]="!amHost"
+            type="checkbox"
+            (change)="showNumbers()"
+          />
+          Show numbers
+        </label>
+      </div>
+
       <button class="button-warn" (click)="leaveRoom()">
         <span *ngIf="room.host.uid === user.uid">Close room</span>
         <span *ngIf="room.host.uid != user.uid">Leave room</span>
@@ -141,7 +148,6 @@
       <app-chart
         [callVote]="changingValue"
         [resetVote]="resetVoteSub"
-        [voteIsCalled]="isCountingDown"
         [room$]="roomValueChanges$"
       ></app-chart>
     </div>

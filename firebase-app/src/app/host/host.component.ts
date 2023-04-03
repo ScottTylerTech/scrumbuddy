@@ -12,9 +12,9 @@ import { IUser } from '../entities/IUser';
 import { BehaviorSubject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { uid } from 'uid';
-import { RoomService } from '../room.service';
-import { UserService } from '../user.service';
-import { StateService } from '../state.service';
+import { RoomService } from '../services/room.service';
+import { UserService } from '../services/user.service';
+import { StateService } from '../services/state.service';
 import { LoadState } from '../entities/LoadState';
 
 @Component({
@@ -53,6 +53,7 @@ export class HostComponent implements OnInit {
       uid: uid(),
       users: [],
       isVoting: false,
+      startCountDown: false,
       countDown: 0,
       countDownReset:
         this.roomForm.value.countDownTime === ''

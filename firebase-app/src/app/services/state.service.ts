@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { LoadState } from './entities/LoadState';
+import { LoadState } from '../entities/LoadState';
 
 @Injectable({
   providedIn: 'root',

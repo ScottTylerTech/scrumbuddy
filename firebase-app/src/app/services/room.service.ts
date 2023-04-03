@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { BehaviorSubject, last, map, takeLast } from 'rxjs';
-import { IRoom } from './entities/IRoom';
+import { IRoom } from '../entities/IRoom';
+import { FirebaseService } from './firebase.service';
 import { UserService } from './user.service';
 
 @Injectable({
@@ -9,6 +10,7 @@ import { UserService } from './user.service';
 })
 export class RoomService {
   room$: BehaviorSubject<IRoom> = new BehaviorSubject({} as IRoom);
+
   constructor(
     private firebase: AngularFireDatabase,
     private userService: UserService

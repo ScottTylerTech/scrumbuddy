@@ -3,6 +3,7 @@ import { ChartConfiguration, Color } from 'chart.js';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { IRoom } from '../entities/IRoom';
 import { IUser } from '../entities/IUser';
+import { CountDownService } from '../services/count-down.service';
 
 interface IResult {
   ep: string;
@@ -22,7 +23,6 @@ export class ChartComponent implements OnInit {
   @Input() callVote: Subject<IUser[]> = new Subject();
   @Input() resetVote = new Subject();
   countDownStart$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  @Input() voteIsCalled: boolean = false;
   @Input() room$: Observable<any>;
 
   public barChartLegend = false;
@@ -82,7 +82,7 @@ export class ChartComponent implements OnInit {
   mode: number = 0;
 
   voteCalled: boolean = false;
-  constructor() {
+  constructor(public countDownService: CountDownService) {
     this.voteDistribution = [0, 2, 1, 3, 1, 0, 0, 0, 0, 0];
     this.effortPoints = ['1', '2', '3', '5', '8', '13', '21', '34', '55'];
     this.mode = 0;

@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { IRoom } from './entities/IRoom';
 import { IUser } from './entities/IUser';
 import { LoadState } from './entities/LoadState';
-import { RoomService } from './room.service';
-import { StateService } from './state.service';
-import { UserService } from './user.service';
+import { RoomService } from './services/room.service';
+import { StateService } from './services/state.service';
+import { UserService } from './services/user.service';
 
 @Component({
   selector: 'app-root',
